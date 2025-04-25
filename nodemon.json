@@ -1,0 +1,10 @@
+{
+    "watch": ["src"],
+    "ext": "ts,json",
+    "ignore": ["node_modules", "dist"],
+    "exec": "node --loader @swc/node/esm --no-warnings ./src/index.ts",
+    "env": {
+        "NODE_ENV": "development"
+    },
+    "restartable": "rs"
+}
