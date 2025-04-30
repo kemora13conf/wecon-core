@@ -1,7 +1,4 @@
-import {
-    Router,
-} from 'express';
-import { PathParams, RequestHandlerParams } from 'express-serve-static-core';
+import { Router, Handler } from "express";
 import Route from './Route';
 import ErrorRoute from './ErrorRoute';
 import { IRoutes, Param } from '../types';
@@ -9,24 +6,35 @@ import { InvalidRouteError } from '../errors';
 import { PostmanRouteItem } from '../types/postman';
 
 class Routes {
-    prefix: PathParams;
+    prefix: string;
     error?: ErrorRoute;
     routes: Array<Route | Routes>;
     params?: Param[];
-    middlewares?: RequestHandlerParams[];
+    middlewares?: Handler[];
     postman?: {
         folderName: string;
     };
     module?: string;
 
     constructor(r: IRoutes) {
-        this.prefix = r.prefix;
+        this.prefix = r.prefix ? r.prefix : '';
         this.routes = r.routes;
-        this.params = r.params;
-        this.middlewares = r.middlewares;
+        this.params = r.params ? r.params : [];
+        this.middlewares = r.middlewares ? r.middlewares : [];
         this.postman = r.postman ? r.postman : { folderName: '' };
         this.module = r.module ? r.module : undefined;
         this.error = r.error ? r.error : undefined;
+
+        /**
+         * All the required fields must gevin 
+         * throw an error if not
+         */
+        if (!this.routes) {
+            throw new InvalidRouteError('Routes instance must have a routes property');
+        }
+        if (!Array.isArray(this.routes)) {
+            throw new InvalidRouteError('Routes instance routes must be an array');
+        }
     }
 
     buildRouter(p_router?: Router, p_prefix?: { path: string }): Router {
@@ -69,9 +77,9 @@ class Routes {
             this.params.forEach(param => {
                 if (!param.path || typeof param.method !== 'function') {
                     throw new InvalidRouteError(`
-            INVALID params FIELD: params must have a path and a method
-            PATH: ${param.path}
-            METHOD: ${typeof param.method === 'function' ? 'function' : 'null'}
+INVALID params FIELD: params must have a path and a method
+    PATH: ${param.path}
+    METHOD: ${typeof param.method === 'function' ? 'function' : 'null'}
           `);
                 }
 

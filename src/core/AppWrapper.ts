@@ -1,60 +1,40 @@
-import { Express } from 'express';
-import Routes from './Routes';
-import { AppWrapperConfig, PostmanConfig, SecurityConfig } from '../types';
-import PostmanGenerator from '../generators/Postman';
-import { PostmanRouteItem } from '../types/postman';
+import { Express } from "express";
+import { AppWrapperConfig } from "../types";
+import PostmanController from "./PotmanController";
+import { findRequestRai } from "../lib/rais/middlewares/findRequestRai";
+import { isAuthorized } from "../lib/rais/middlewares/isAuthorized";
+import { InitializeCreatingRAIs } from "../lib/rais";
 
-class AppWrapper {
-    private express: Express;
-    private routes: Routes;
-    private postman?: PostmanConfig;
-    private security?: SecurityConfig;
+class AppWrapper extends PostmanController {
+  private app: Express;
+  private roles?: string[];
 
-    constructor(config: AppWrapperConfig) {
-        this.express = config.express;
-        this.routes = config.routes;
-        this.postman = config.postman;
-        this.security = config.security;
-    }
-    public getExpress(): Express {
-        this.express.use(this.routes.buildRouter());
-        return this.express;
-    }
+  constructor(config: AppWrapperConfig) {
+    super(config.routes, config.postman);
+    this.app = config.app;
+    this.routes = config.routes;
+    this.roles = config.roles ? config.roles : [];
+  }
+  public getExpressApp(): Express {
+    /**
+     * Seed RAIs & roles in the app.locals
+     * This is used to find the RAI for the current request
+     * and to check if the user is authorized to access the route
+     */
+    const { rais } = InitializeCreatingRAIs(this.routes);
+    this.app.locals.roles = this.roles?.map((role) => {
+      return {
+        _id: role,
+        name: role,
+      };
+    });
+    this.app.locals.rais = rais;
 
-    public generatePostmanCollection(filePath: string): void {
-        if (this.postman) {
-            const postmanGen = new PostmanGenerator(this.postman.name, this.postman.description, {
-                version: this.postman.version,
-                baseUrl: this.postman.baseUrl,
-            });
-            postmanGen.generateCollection(new Routes({
-                prefix: '',
-                routes: [this.routes],
-            }).generateFolder() as PostmanRouteItem[]);
+    this.app.use(findRequestRai, isAuthorized);
+    this.app.use(this.routes.buildRouter());
 
-            postmanGen.saveCollectionToFile(filePath)
-        } else {
-            throw new Error('Postman config is not defined');
-        }
-    }
-
-    public savePostmanEnvironment(filePath: string): void {
-        if (this.postman) {
-            const postmanGen = new PostmanGenerator(this.postman.name, this.postman.description, {
-                version: this.postman.version,
-                baseUrl: this.postman.baseUrl,
-            });
-            postmanGen.generateEnvironment(new Routes({
-                prefix: '',
-                routes: [this.routes],
-            }).generateFolder() as PostmanRouteItem[]);
-
-            postmanGen.saveEnvironmentToFile(filePath)
-        } else {
-            throw new Error('Postman config is not defined');
-        }
-    }
+    return this.app;
+  }
 }
-
 
 export default AppWrapper;

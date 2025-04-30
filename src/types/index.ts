@@ -1,20 +1,19 @@
-import { Express, Request, Response } from "express";
-import { NextFunction, PathParams, RequestHandlerParams } from "express-serve-static-core";
+import { Express, Handler, RequestParamHandler } from "express";
 import Route from "../core/Route";
 import Routes from "../core/Routes";
 import ErrorRoute from "../core/ErrorRoute";
 
 interface Param {
-    path: string;
-    method: (req: Request, res: Response, next: NextFunction, id: string) => Promise<void> | void;
+  path: string;
+  method: RequestParamHandler;
 }
 
 interface IRoutes {
-    prefix: PathParams;
+    prefix?: string;
     routes: Array<Route | Routes>;
     error?: ErrorRoute;
     params?: Param[];
-    middlewares?: RequestHandlerParams[];
+    middlewares?: Handler[];
     postman?: {
         folderName: string;
     };
@@ -24,11 +23,11 @@ interface IRoutes {
 interface IRoute {
     method: 'GET' | 'POST' | 'PUT' | 'DELETE';
     path: string;
-    middlewares: RequestHandlerParams[];
-    name: string;
-    description: string;
+    middlewares: Handler[];
+    name?: string;
+    description?: string;
     rai: string;
-    parents: string[];
+    roles: string[];
     postman?: {
         body: Record<string, unknown>;
         params?: Array<{ key: string, value: string, description: string }>;
@@ -48,20 +47,10 @@ interface IPostmanUrl {
 }
 
 interface AppWrapperConfig {
-    express: Express;
+    app: Express;
     routes: Routes;
     postman?: PostmanConfig;
-    security?: SecurityConfig;
-}
-export interface SecurityConfig {
-    roles: RoleDefinition[];
-    defaultRole?: string;
-    unauthorized?: (req: Request, res: Response) => void;
-}
-export interface RoleDefinition {
-    name: string;
-    permissions: string[];
-    inherits?: string[];
+    roles?: string[];
 }
 
 export interface PostmanConfig {

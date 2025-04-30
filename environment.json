@@ -1,0 +1,13 @@
+{
+  "id": "64b7ade2-9768-4924-ab74-4c0f4e92da5d",
+  "name": "Example API",
+  "values": [
+    {
+      "key": "base_url",
+      "value": "",
+      "type": "string",
+      "description": "Base URL for all requests"
+    }
+  ],
+  "_postman_variable_scope": "environment"
+}
