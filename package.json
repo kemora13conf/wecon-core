@@ -1,6 +1,6 @@
 {
   "name": "asifjs",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A TypeScript framework for building Express.js APIs with built-in role-based access control and Postman documentation generation",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
