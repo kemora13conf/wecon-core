@@ -1,0 +1,47 @@
+# Source files
+src/
+test/
+tests/
+
+# Configuration files
+.github/
+.vscode/
+.idea/
+.editorconfig
+.eslintrc
+.eslintrc.js
+.eslintrc.json
+.prettierrc
+.prettierrc.js
+.prettierignore
+.swcrc
+eslint.config.mjs
+nodemon.json
+tsconfig.json
+jest.config.js
+
+# Git files
+.git/
+.gitattributes
+.gitignore
+
+# Development files
+*.log
+*.tgz
+.DS_Store
+coverage/
+node_modules/
+
+# Example files
+examples/
+docs/
+collection.json
+environment.json
+
+# Lock files
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# Build outputs except dist
+dist/*.tsbuildinfo
