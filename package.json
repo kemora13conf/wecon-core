@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "main": "index.js",
   "type": "module",
-  "repository": "https://github.com/kemora13conf/asif",
+  "repository": "https://github.com/kemora13conf/vortex-js-core.git",
   "author": "Abdelghani El Mouak <abdelghanielmouak@gmail.com>",
   "license": "MIT",
   "publishConfig": {
