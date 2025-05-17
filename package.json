@@ -19,11 +19,11 @@
     "start": "node --loader @swc/node/esm --no-warnings ./src/index.ts",
     "dev": "nodemon",
     "clean": "rimraf dist",
-    "build": "yarn run clean && tsc",
-    "prepublishOnly": "yarn run build",
+    "build": "npm run clean && tsc",
+    "prepublishOnly": "npm run build",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
-    "publish:npm": "yarn run build && npm publish --access public"
+    "publish:npm": "npm run build && npm publish --access public"
   },
   "devDependencies": {
     "@eslint/css": "^0.7.0",
