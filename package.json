@@ -6,6 +6,10 @@
   "repository": "https://github.com/kemora13conf/asif",
   "author": "Abdelghani El Mouak <abdelghanielmouak@gmail.com>",
   "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "description": "A simple and powerful role-based access control (RBAC) middleware for Express.js, designed to be easy to use and integrate with your existing applications. It provides a flexible way to manage user permissions and roles, making it ideal for building secure APIs.",
   "keywords": [
     "express",
     "api",
@@ -19,11 +23,11 @@
     "start": "node --loader @swc/node/esm --no-warnings ./src/index.ts",
     "dev": "nodemon",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
-    "prepublishOnly": "npm run build",
+    "build": "yarn run clean && tsc",
+    "prepublishOnly": "yarn run build",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
-    "publish:npm": "npm run build && npm publish --access public"
+    "publish:npm": "yarn run build && npm publish --access public"
   },
   "devDependencies": {
     "@eslint/css": "^0.7.0",
