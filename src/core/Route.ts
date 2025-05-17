@@ -140,7 +140,6 @@ INVALID MIDDLEWARE FIELD: middleware must be a function
 
   /**
    * This function is used to generate the route for postman collection (route = request)
-   * @return {Object}
    */
   generateRoute(pathPrefix: string = "") {
     const fullPath = pathPrefix + this.path;

@@ -1,4 +1,4 @@
-import { IRAI, IRole } from "../lib/rais/types";
+import { IRAI, IRole } from "../lib/rais/types/index.ts";
 
 declare global {
   namespace Express {
@@ -17,6 +17,6 @@ declare global {
       };
     }
 
-    interface Response {}
+    interface Response { }
   }
 }

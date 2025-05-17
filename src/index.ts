@@ -1,65 +1,98 @@
-import AppWrapper from "./core/AppWrapper";
-import Route from "./core/Route";
-import Routes from "./core/Routes";
-import express, { NextFunction, Request, Response } from "express";
+/**
+ * RBAC Express Framework
+ * 
+ * A TypeScript framework for building Express.js APIs with built-in
+ * role-based access control and Postman documentation generation.
+ */
 
-const userRoutes = new Routes({
-  prefix: "/users",
-  params: [
-    {
-      path: "id",
-      method: async (
-        req: Request,
-        res: Response,
-        next: NextFunction,
-        id: string
-      ) => {
-        if (!id || !/^\d+$/.test(id)) {
-          return res.status(400).json({ error: "Invalid user ID" });
-        }
-        return next();
-      },
-    },
-  ],
-  routes: [
-    new Route({
-      path: "/",
-      method: "GET",
-      roles: ["admin", "user"],
-      rai: "users:list",
-      middlewares: [
-        (req, res) => {
-          res.json({ message: "List of users" });
-        },
-      ],
-    }),
-  ],
-  postman: {
-    folderName: "User Management",
-  },
-});
+// Core exports
+import AppWrapper from './core/AppWrapper';
+import Route from './core/Route';
+import Routes from './core/Routes';
+import ErrorRoute from './core/ErrorRoute';
 
-// Define API routes
-const apiRoutes = new Routes({
-  prefix: "/api/v1",
-  routes: [userRoutes],
-});
+// RAI system exports
+import { InitializeCreatingRAIs } from './lib/rais';
+import { findRequestRai } from './lib/rais/middlewares/findRequestRai';
+import { isAuthorized } from './lib/rais/middlewares/isAuthorized';
+import { IRAI, IRole } from './lib/rais/types';
 
-// Initialize app wrapper
-const appWrapper = new AppWrapper({
-  app: express(),
-  routes: apiRoutes,
-  postman: {
-    name: "Example API",
-    description: "Example API documentation",
-  },
-  roles: ["admin", "user", "guest"],
-});
+// Generator exports
+import PostmanGenerator from './generators/Postman';
 
-appWrapper.generatePostmanCollection("collection.json");
-appWrapper.generatePostmanEnvironment("environment.json");
+// Type exports
+import {
+  IRoute,
+  IRoutes,
+  Param,
+  AppWrapperConfig,
+  PostmanConfig,
+  IPostmanUrl
+} from './types';
 
-const app = appWrapper.getExpressApp();
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
-});
+import {
+  PostmanCollection,
+  PostmanEnvironment,
+  PostmanInfo,
+  PostmanRouteItem,
+  PostmanUrl,
+  PostmanRequest,
+  PostmanVariable,
+  SaveOptions
+} from './types/postman';
+
+// Error exports
+import {
+  ApiRouteNotFoundError,
+  InvalidRouteError,
+  NotFoundRouteError,
+  SocketAuthError,
+  SocketIOError
+} from './errors';
+
+// Export everything
+export {
+  // Core classes
+  AppWrapper,
+  Route,
+  Routes,
+  ErrorRoute,
+
+  // RAI system
+  InitializeCreatingRAIs,
+  findRequestRai,
+  isAuthorized,
+
+  // Generators
+  PostmanGenerator,
+
+  // Types
+  IRoute,
+  IRoutes,
+  Param,
+  AppWrapperConfig,
+  PostmanConfig,
+  IPostmanUrl,
+  IRAI,
+  IRole,
+
+  // Postman types
+  PostmanCollection,
+  PostmanEnvironment,
+  PostmanInfo,
+  PostmanRouteItem,
+  PostmanUrl,
+  PostmanRequest,
+  PostmanVariable,
+  SaveOptions,
+
+  // Errors
+  ApiRouteNotFoundError,
+  InvalidRouteError,
+  NotFoundRouteError,
+  SocketAuthError,
+  SocketIOError
+};
+
+// Default export
+export default AppWrapper;

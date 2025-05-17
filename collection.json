@@ -9,7 +9,7 @@
       "name": "User Management",
       "item": [
         {
-          "name": " 1 - [GET] /",
+          "name": " 1 - Get all users",
           "request": {
             "method": "GET",
             "url": {
@@ -23,7 +23,7 @@
                 "users"
               ]
             },
-            "description": "",
+            "description": "Fetch all users from the database",
             "body": {}
           }
         }
