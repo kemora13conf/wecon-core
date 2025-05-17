@@ -1,6 +1,6 @@
 {
   "name": "@asif/core",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "type": "module",
   "repository": "https://github.com/kemora13conf/asif",
@@ -19,11 +19,11 @@
     "start": "node --loader @swc/node/esm --no-warnings ./src/index.ts",
     "dev": "nodemon",
     "clean": "rimraf dist",
-    "build": "npm run clean && tsc",
-    "prepublishOnly": "npm run build",
+    "build": "yarn run clean && tsc",
+    "prepublishOnly": "yarn run build",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
-    "publish:npm": "npm run build && npm publish --access public"
+    "publish:npm": "yarn run build && npm publish --access public"
   },
   "devDependencies": {
     "@eslint/css": "^0.7.0",
