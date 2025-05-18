@@ -1,7 +1,11 @@
 {
   "name": "@vortex-js/core",
   "version": "0.2.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "repository": "https://github.com/kemora13conf/vortex-js-core.git",
   "author": "Abdelghani El Mouak <abdelghanielmouak@gmail.com>",
