@@ -1,24 +1,25 @@
 /**
  * RBAC Express Framework
- * 
+ *
  * A TypeScript framework for building Express.js APIs with built-in
  * role-based access control and Postman documentation generation.
  */
 
 // Core exports
-import AppWrapper from './core/AppWrapper';
-import Route from './core/Route';
-import Routes from './core/Routes';
-import ErrorRoute from './core/ErrorRoute';
+import AppWrapper from "./core/AppWrapper";
+import Route from "./core/Route";
+import Routes from "./core/Routes";
+import ErrorRoute from "./core/ErrorRoute";
+import Module from "./core/Module";
 
 // RAI system exports
-import { InitializeCreatingRAIs } from './lib/rais';
-import { findRequestRai } from './lib/rais/middlewares/findRequestRai';
-import { isAuthorized } from './lib/rais/middlewares/isAuthorized';
-import { IRAI, IRole } from './lib/rais/types';
+import { InitializeCreatingRAIs } from "./lib/rais";
+import { findRequestRai } from "./lib/rais/middlewares/findRequestRai";
+import { isAuthorized } from "./lib/rais/middlewares/isAuthorized";
+import { IRAI, IRole } from "./lib/rais/types";
 
 // Generator exports
-import PostmanGenerator from './generators/Postman';
+import PostmanGenerator from "./generators/Postman";
 
 // Type exports
 import {
@@ -27,8 +28,9 @@ import {
   Param,
   AppWrapperConfig,
   PostmanConfig,
-  IPostmanUrl
-} from './types';
+  IPostmanUrl,
+  ModuleConfig,
+} from "./types";
 
 import {
   PostmanCollection,
@@ -38,8 +40,8 @@ import {
   PostmanUrl,
   PostmanRequest,
   PostmanVariable,
-  SaveOptions
-} from './types/postman';
+  SaveOptions,
+} from "./types/postman";
 
 // Error exports
 import {
@@ -47,8 +49,8 @@ import {
   InvalidRouteError,
   NotFoundRouteError,
   SocketAuthError,
-  SocketIOError
-} from './errors';
+  SocketIOError,
+} from "./errors";
 
 // Export everything
 export {
@@ -57,6 +59,7 @@ export {
   Route,
   Routes,
   ErrorRoute,
+  Module,
 
   // RAI system
   InitializeCreatingRAIs,
@@ -72,6 +75,7 @@ export {
   Param,
   AppWrapperConfig,
   PostmanConfig,
+  ModuleConfig,
   IPostmanUrl,
   IRAI,
   IRole,
@@ -91,7 +95,7 @@ export {
   InvalidRouteError,
   NotFoundRouteError,
   SocketAuthError,
-  SocketIOError
+  SocketIOError,
 };
 
 // Default export

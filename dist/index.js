@@ -9,7 +9,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SocketIOError = exports.SocketAuthError = exports.NotFoundRouteError = exports.InvalidRouteError = exports.ApiRouteNotFoundError = exports.PostmanGenerator = exports.isAuthorized = exports.findRequestRai = exports.InitializeCreatingRAIs = exports.ErrorRoute = exports.Routes = exports.Route = exports.AppWrapper = void 0;
+exports.SocketIOError = exports.SocketAuthError = exports.NotFoundRouteError = exports.InvalidRouteError = exports.ApiRouteNotFoundError = exports.PostmanGenerator = exports.isAuthorized = exports.findRequestRai = exports.InitializeCreatingRAIs = exports.Module = exports.ErrorRoute = exports.Routes = exports.Route = exports.AppWrapper = void 0;
 // Core exports
 const AppWrapper_1 = __importDefault(require("./core/AppWrapper"));
 exports.AppWrapper = AppWrapper_1.default;
@@ -19,6 +19,8 @@ const Routes_1 = __importDefault(require("./core/Routes"));
 exports.Routes = Routes_1.default;
 const ErrorRoute_1 = __importDefault(require("./core/ErrorRoute"));
 exports.ErrorRoute = ErrorRoute_1.default;
+const Module_1 = __importDefault(require("./core/Module"));
+exports.Module = Module_1.default;
 // RAI system exports
 const rais_1 = require("./lib/rais");
 Object.defineProperty(exports, "InitializeCreatingRAIs", { enumerable: true, get: function () { return rais_1.InitializeCreatingRAIs; } });

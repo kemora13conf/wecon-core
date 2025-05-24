@@ -53,7 +53,7 @@ interface AppWrapperConfig {
     roles?: string[];
 }
 
-export interface PostmanConfig {
+interface PostmanConfig {
     name: string;
     description?: string;
     version?: string;
@@ -61,5 +61,10 @@ export interface PostmanConfig {
 }
 
 
+interface ModuleConfig<T> {
+    routes: Routes;
+    config: T;
+}
 
-export type { IPostmanUrl, IRoute, IRoutes, Param, AppWrapperConfig };
+
+export type { IPostmanUrl, IRoute, IRoutes, Param, AppWrapperConfig , PostmanConfig, ModuleConfig };
