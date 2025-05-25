@@ -23,7 +23,9 @@ const findRequestRai = async (req, res, next) => {
             // Add a check to ensure r.path is a string
             if (typeof r.path === "string") {
                 const test = (0, path_to_regexp_1.match)(r.path);
-                return test(route) && r.method?.trim() === method?.trim();
+                return ((test(route) ||
+                    test(route.endsWith("/") ? route.slice(0, -1) : route.concat("/"))) &&
+                    r.method?.trim() === method?.trim());
             }
             return false;
         });
