@@ -4,12 +4,14 @@ import Routes from "./Routes";
 class Module<T> {
   public routes: Routes;
   public config: T;
-  constructor({ routes, config = {} as T }: ModuleConfig<T>) {
-    if (!routes) {
+  public bootstrap?: () => Promise<void> | void;
+  constructor(config: ModuleConfig<T>) {
+    if (!config.routes) {
       throw new Error("Module name and version are required");
     }
-    this.routes = routes;
-    this.config = config;
+    this.routes = config.routes;
+    this.config = config.config;
+    this.bootstrap = config.bootstrap;
   }
 }
 export default Module;
