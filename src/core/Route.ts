@@ -4,8 +4,10 @@ import { IPostmanUrl, IRoute } from "../types";
 import { PostmanRouteItem } from "../types/postman";
 import Routes from "./Routes";
 import { InvalidRouteError } from "../errors";
+import Module from "./Module";
 
-class Route {
+class Route<T = any> {
+  module?: Module<T>;
   id: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
@@ -50,6 +52,20 @@ class Route {
       throw new InvalidRouteError(
         "Route instance middlewares must be an array"
       );
+    }
+  }
+  /**
+   * This function is used to register a module to the route
+   * so that we can use the module name in the route
+   * and also to access the module config if needed
+   */
+  public registerModule(module: Module<T>) {
+    this.module = module;
+    /**
+     * If the module has a name, we can set it to the route
+     */
+    if (module.name) {
+      this.name = `${module.name} - ${this.name}`;
     }
   }
 

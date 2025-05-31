@@ -62,6 +62,7 @@ interface PostmanConfig {
 
 
 interface ModuleConfig<T> {
+    name: string;
     routes: Routes;
     config: T;
     bootstrap?: () => Promise<void> | void;

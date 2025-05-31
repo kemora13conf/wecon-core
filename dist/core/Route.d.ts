@@ -2,7 +2,9 @@ import { Router, Handler } from "express";
 import { IRoute } from "../types";
 import { PostmanRouteItem } from "../types/postman";
 import Routes from "./Routes";
-declare class Route {
+import Module from "./Module";
+declare class Route<T = any> {
+    module?: Module<T>;
     id: string;
     method: "GET" | "POST" | "PUT" | "DELETE";
     path: string;
@@ -20,6 +22,12 @@ declare class Route {
         }>;
     };
     constructor(r: IRoute);
+    /**
+     * This function is used to register a module to the route
+     * so that we can use the module name in the route
+     * and also to access the module config if needed
+     */
+    registerModule(module: Module<T>): void;
     buildRoute(router: Router, route: Routes, prefix: {
         path: string;
     }): void;

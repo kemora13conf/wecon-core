@@ -33,6 +33,20 @@ class Route {
             throw new errors_1.InvalidRouteError("Route instance middlewares must be an array");
         }
     }
+    /**
+     * This function is used to register a module to the route
+     * so that we can use the module name in the route
+     * and also to access the module config if needed
+     */
+    registerModule(module) {
+        this.module = module;
+        /**
+         * If the module has a name, we can set it to the route
+         */
+        if (module.name) {
+            this.name = `${module.name} - ${this.name}`;
+        }
+    }
     buildRoute(router, route, prefix) {
         /**
          * After Making sure that the route is an instance of Routes
