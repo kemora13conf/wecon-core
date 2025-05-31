@@ -66,6 +66,9 @@ interface ModuleConfig<T> {
     routes: Routes;
     config: T;
     bootstrap?: () => Promise<void> | void;
+    i18n?: {
+        [key: string]: Record<string, string>;
+    };
 }
 
 

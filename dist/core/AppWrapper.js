@@ -14,7 +14,7 @@ class AppWrapper extends PotmanController_1.default {
         this.routes = config.routes;
         this.roles = config.roles ? config.roles : [];
     }
-    getExpressApp() {
+    getExpressApp(middlewares = []) {
         /**
          * Seed RAIs & roles in the app.locals
          * This is used to find the RAI for the current request
@@ -29,6 +29,16 @@ class AppWrapper extends PotmanController_1.default {
         });
         this.app.locals.rais = rais;
         this.app.use(findRequestRai_1.findRequestRai, isAuthorized_1.isAuthorized);
+        /**
+         * Register middlewares
+         * These middlewares will be applied to all routes
+         *
+         * we are doing this because if you register any middlewares
+         * after the routes, they will not be executed
+         */
+        if (middlewares && middlewares.length > 0) {
+            this.app.use(middlewares);
+        }
         this.app.use(this.routes.buildRouter());
         return this.app;
     }

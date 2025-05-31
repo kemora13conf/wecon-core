@@ -9,36 +9,37 @@ class Module {
         if (!config.routes) {
             throw new Error("Module name and version are required");
         }
-        this.name = config.name;
-        this.routes = config.routes;
-        this.config = config.config;
-        this.bootstrap = config.bootstrap;
         /**
          * All the required fields must be given
          * throw an error if not
          */
-        if (!this.name) {
+        if (!config.name) {
             throw new Error("Module name is required");
         }
-        if (!this.routes) {
+        if (!config.routes) {
             throw new Error("Module routes are required");
         }
-        if (!this.config) {
+        if (!config.config) {
             throw new Error("Module config is required");
         }
-        if (!(this.routes instanceof Routes_1.default)) {
+        if (!(config.routes instanceof Routes_1.default)) {
             throw new Error("Module routes must be an instance of Routes");
         }
-        if (this.bootstrap &&
-            (typeof this.bootstrap !== "function" ||
-                this.bootstrap instanceof Promise)) {
+        if (config.bootstrap &&
+            (typeof config.bootstrap !== "function" ||
+                config.bootstrap instanceof Promise)) {
             throw new Error("Module bootstrap must be a function");
         }
-        // Register the module to all routes
-        this.addModuleToAllRoutes();
+        this.name = config.name;
+        this.config = config.config;
+        this.bootstrap = config.bootstrap;
+        this.i18n = config.i18n ? config.i18n : {};
+        // Ensure routes have a module reference
+        this.addModuleToAllRoutes(config.routes);
+        this.routes = config.routes;
     }
-    addModuleToAllRoutes() {
-        this.routes.registerModule(this);
+    addModuleToAllRoutes(routes) {
+        routes.registerModule(this);
     }
 }
 exports.default = Module;

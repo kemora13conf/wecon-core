@@ -1,4 +1,4 @@
-import { Express } from "express";
+import { Express, RequestHandler } from "express";
 import { AppWrapperConfig } from "../types";
 import PostmanController from "./PotmanController";
 import { findRequestRai } from "../lib/rais/middlewares/findRequestRai";
@@ -15,7 +15,7 @@ class AppWrapper extends PostmanController {
     this.routes = config.routes;
     this.roles = config.roles ? config.roles : [];
   }
-  public getExpressApp(): Express {
+  public getExpressApp(middlewares: RequestHandler[] = []): Express {
     /**
      * Seed RAIs & roles in the app.locals
      * This is used to find the RAI for the current request
@@ -31,6 +31,17 @@ class AppWrapper extends PostmanController {
     this.app.locals.rais = rais;
 
     this.app.use(findRequestRai, isAuthorized);
+
+    /**
+     * Register middlewares
+     * These middlewares will be applied to all routes
+     * 
+     * we are doing this because if you register any middlewares 
+     * after the routes, they will not be executed
+     */
+    if( middlewares && middlewares.length > 0) {
+      this.app.use(middlewares);
+    }
     this.app.use(this.routes.buildRouter());
 
     return this.app;

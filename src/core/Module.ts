@@ -4,47 +4,50 @@ import Routes from "./Routes";
 
 class Module<T> {
   public name: string;
-  public routes: Routes;
+  public routes: Routes & { module: Module<T> }; // Routes with guaranteed module
   public config: T;
   public bootstrap?: () => Promise<void> | void;
+  i18n?: {
+    [key: string]: Record<string, string>;
+  };
   constructor(config: ModuleConfig<T>) {
     if (!config.routes) {
       throw new Error("Module name and version are required");
     }
-    this.name = config.name;
-    this.routes = config.routes;
-    this.config = config.config;
-    this.bootstrap = config.bootstrap;
-
     /**
      * All the required fields must be given
      * throw an error if not
      */
-    if (!this.name) {
+    if (!config.name) {
       throw new Error("Module name is required");
     }
-    if (!this.routes) {
+    if (!config.routes) {
       throw new Error("Module routes are required");
     }
-    if (!this.config) {
+    if (!config.config) {
       throw new Error("Module config is required");
     }
-    if (!(this.routes instanceof Routes)) {
+    if (!(config.routes instanceof Routes)) {
       throw new Error("Module routes must be an instance of Routes");
     }
     if (
-      this.bootstrap &&
-      (typeof this.bootstrap !== "function" ||
-        this.bootstrap instanceof Promise)
+      config.bootstrap &&
+      (typeof config.bootstrap !== "function" ||
+        config.bootstrap instanceof Promise)
     ) {
       throw new Error("Module bootstrap must be a function");
     }
-    // Register the module to all routes
-    this.addModuleToAllRoutes();
+    this.name = config.name;
+    this.config = config.config;
+    this.bootstrap = config.bootstrap;
+    this.i18n = config.i18n ? config.i18n : {};
+    // Ensure routes have a module reference
+    this.addModuleToAllRoutes(config.routes);
+    this.routes = config.routes as Routes & { module: Module<T> };
   }
 
-  private addModuleToAllRoutes(): void {
-    this.routes.registerModule(this);
+  private addModuleToAllRoutes(routes: Routes) {
+    routes.registerModule(this);
   }
 }
 export default Module;

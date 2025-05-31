@@ -12,6 +12,7 @@ interface IRAI {
   children: string[];
   roles: string[];
   isStopped: boolean;
+  module: string;
 }
 
 export type { IRAI, IRole };

@@ -40,6 +40,7 @@ INVALID roles FIELD:
                 roles: route.roles,
                 children: [],
                 isStopped: false,
+                module: route.module?.name || "core",
             };
             rais.push(rai);
             route.roles.forEach((role) => roles.add(role));
