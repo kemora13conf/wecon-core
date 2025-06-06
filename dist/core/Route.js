@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const uuid_1 = require("uuid");
 const errors_1 = require("../errors");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 class Route {
     constructor(r) {
         this.id = (0, uuid_1.v4)();
@@ -135,8 +136,17 @@ INVALID MIDDLEWARE FIELD: middleware must be a function
      * This function is used to generate the route for postman collection (route = request)
      */
     generateRoute(pathPrefix = "") {
-        const fullPath = pathPrefix + this.path;
+        let fullPath = pathPrefix + this.path;
+        // Extract all express's router parameters from the path
+        // This is to replace the parameters with Postman's variable syntax
+        // For example, if the path is "/users/:userId", it will be replaced with "/users/{{ userId }}"
+        const expressRouterParamRegex = /:([a-zA-Z0-9_]+)/g; // Extract path parameters from the route path
+        fullPath = fullPath.replace(expressRouterParamRegex, "{{ $1 }}");
+        // Remove trailing slashes from the path
         const urlParts = fullPath.split("?")[0];
+        // Create an array of path segments, filtering out empty segments
+        // This is to ensure that the path is correctly formatted for Postman
+        // and does not contain any empty segments that could cause issues
         const pathSegments = urlParts
             .split("/")
             .filter((segment) => segment !== "");

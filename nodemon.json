@@ -2,7 +2,7 @@
   "watch": ["src"],
   "ext": "ts,json",
   "ignore": ["node_modules", "dist"],
-  "exec": "node --loader @swc-node/register/esm src/index.ts",
+  "exec": "yarn build",
   "env": {
     "NODE_ENV": "development"
   },
