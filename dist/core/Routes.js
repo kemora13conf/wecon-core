@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Route_1 = __importDefault(require("./Route"));
 const errors_1 = require("../errors");
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 class Routes {
     constructor(r) {
         this.prefix = r.prefix ? r.prefix : "";
@@ -83,6 +84,7 @@ INVALID params FIELD: params must have a path and a method
                     ? param.path.slice(1)
                     : param.path;
                 router.param(paramPath, param.method);
+                console.log(`Registered param: ${paramPath}`);
             });
         }
     }

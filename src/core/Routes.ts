@@ -6,6 +6,7 @@ import { InvalidRouteError } from "../errors";
 import { PostmanRouteItem } from "../types/postman";
 import Module from "./Module";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 class Routes<T = any> {
   module?: Module<T>;
   prefix: string;
