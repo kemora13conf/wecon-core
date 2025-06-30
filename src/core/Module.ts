@@ -1,16 +1,17 @@
 import { ModuleConfig } from "../types";
-import Route from "./Route";
 import Routes from "./Routes";
 
 class Module<T> {
   public name: string;
   public routes: Routes & { module: Module<T> }; // Routes with guaranteed module
-  public config: T;
   public bootstrap?: () => Promise<void> | void;
-  i18n?: {
-    [key: string]: Record<string, string>;
-  };
-  constructor(config: ModuleConfig<T>) {
+  i18n?: ModuleConfig["i18n"];
+
+  /**
+   * Module class to encapsulate routes and bootstrap functionality
+   * @param config - Configuration object for the module
+   */
+  constructor(config: ModuleConfig) {
     if (!config.routes) {
       throw new Error("Module name and version are required");
     }
@@ -24,9 +25,6 @@ class Module<T> {
     if (!config.routes) {
       throw new Error("Module routes are required");
     }
-    if (!config.config) {
-      throw new Error("Module config is required");
-    }
     if (!(config.routes instanceof Routes)) {
       throw new Error("Module routes must be an instance of Routes");
     }
@@ -38,7 +36,6 @@ class Module<T> {
       throw new Error("Module bootstrap must be a function");
     }
     this.name = config.name;
-    this.config = config.config;
     this.bootstrap = config.bootstrap;
     this.i18n = config.i18n ? config.i18n : {};
     // Ensure routes have a module reference

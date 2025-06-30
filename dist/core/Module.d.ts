@@ -5,12 +5,13 @@ declare class Module<T> {
     routes: Routes & {
         module: Module<T>;
     };
-    config: T;
     bootstrap?: () => Promise<void> | void;
-    i18n?: {
-        [key: string]: Record<string, string>;
-    };
-    constructor(config: ModuleConfig<T>);
+    i18n?: ModuleConfig["i18n"];
+    /**
+     * Module class to encapsulate routes and bootstrap functionality
+     * @param config - Configuration object for the module
+     */
+    constructor(config: ModuleConfig);
     private addModuleToAllRoutes;
 }
 export default Module;

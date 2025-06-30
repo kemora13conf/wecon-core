@@ -5,6 +5,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const Routes_1 = __importDefault(require("./Routes"));
 class Module {
+    /**
+     * Module class to encapsulate routes and bootstrap functionality
+     * @param config - Configuration object for the module
+     */
     constructor(config) {
         if (!config.routes) {
             throw new Error("Module name and version are required");
@@ -19,9 +23,6 @@ class Module {
         if (!config.routes) {
             throw new Error("Module routes are required");
         }
-        if (!config.config) {
-            throw new Error("Module config is required");
-        }
         if (!(config.routes instanceof Routes_1.default)) {
             throw new Error("Module routes must be an instance of Routes");
         }
@@ -31,7 +32,6 @@ class Module {
             throw new Error("Module bootstrap must be a function");
         }
         this.name = config.name;
-        this.config = config.config;
         this.bootstrap = config.bootstrap;
         this.i18n = config.i18n ? config.i18n : {};
         // Ensure routes have a module reference

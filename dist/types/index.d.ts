@@ -18,7 +18,7 @@ interface IRoutes {
     module?: string;
 }
 interface IRoute {
-    method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+    method: "GET" | "POST" | "PUT" | "DELETE";
     path: string;
     middlewares: Handler[];
     name?: string;
@@ -57,13 +57,12 @@ interface PostmanConfig {
     version?: string;
     baseUrl?: string;
 }
-interface ModuleConfig<T> {
+interface ModuleConfig {
     name: string;
     routes: Routes;
-    config: T;
     bootstrap?: () => Promise<void> | void;
     i18n?: {
-        [key: string]: Record<string, string>;
+        [key: string]: Record<string, unknown>;
     };
 }
-export type { IPostmanUrl, IRoute, IRoutes, Param, AppWrapperConfig, PostmanConfig, ModuleConfig };
+export type { IPostmanUrl, IRoute, IRoutes, Param, AppWrapperConfig, PostmanConfig, ModuleConfig, };

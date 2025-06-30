@@ -84,7 +84,6 @@ INVALID params FIELD: params must have a path and a method
                     ? param.path.slice(1)
                     : param.path;
                 router.param(paramPath, param.method);
-                console.log(`Registered param: ${paramPath}`);
             });
         }
     }

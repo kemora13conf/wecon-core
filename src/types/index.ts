@@ -60,10 +60,9 @@ interface PostmanConfig {
   baseUrl?: string;
 }
 
-interface ModuleConfig<T> {
+interface ModuleConfig {
   name: string;
   routes: Routes;
-  config: T;
   bootstrap?: () => Promise<void> | void;
   i18n?: {
     [key: string]: Record<string, unknown>;
