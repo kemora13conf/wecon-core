@@ -15,7 +15,10 @@ class AppWrapper extends PostmanController {
     this.routes = config.routes;
     this.roles = config.roles ? config.roles : [];
   }
-  public getExpressApp(middlewares: RequestHandler[] = []): Express {
+  public getExpressApp(
+    middlewares: RequestHandler[] = [],
+    postMiddlewares: RequestHandler[] = []
+  ): Express {
     /**
      * Seed RAIs & roles in the app.locals
      * This is used to find the RAI for the current request
@@ -35,14 +38,25 @@ class AppWrapper extends PostmanController {
     /**
      * Register middlewares
      * These middlewares will be applied to all routes
-     * 
-     * we are doing this because if you register any middlewares 
+     *
+     * we are doing this because if you register any middlewares
      * after the routes, they will not be executed
      */
-    if( middlewares && middlewares.length > 0) {
-      this.app.use(middlewares);
+    if (middlewares && middlewares.length > 0) {
+      middlewares.forEach((middleware) => {
+        this.app.use(middleware);
+      });
     }
     this.app.use(this.routes.buildRouter());
+    /**
+     * Register post middlewares
+     * These middlewares will be applied after the routes
+     */
+    if (postMiddlewares && postMiddlewares.length > 0) {
+      postMiddlewares.forEach((middleware) => {
+        this.app.use(middleware);
+      });
+    }
 
     return this.app;
   }

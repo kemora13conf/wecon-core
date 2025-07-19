@@ -17,10 +17,7 @@ class Route<T = any> {
   description: string;
   rai: string;
   roles: string[];
-  postman?: {
-    body?: Record<string, unknown>;
-    params?: Array<{ key: string; value: string; description: string }>;
-  };
+  postman?: IRoute["postman"];
 
   constructor(r: IRoute) {
     this.id = uuidv4();
@@ -31,7 +28,9 @@ class Route<T = any> {
     this.description = r.description ? r.description : "";
     this.rai = r.rai;
     this.roles = r.roles;
-    this.postman = r.postman ? r.postman : { body: {}, params: [] };
+    this.postman = r.postman
+      ? r.postman
+      : { headers: [], body: {}, params: [] };
 
     /**
      * All the required fields must gevin
@@ -160,7 +159,7 @@ INVALID MIDDLEWARE FIELD: middleware must be a function
    */
   generateRoute(pathPrefix: string = "") {
     let fullPath = pathPrefix + this.path;
-    
+
     // Extract all express's router parameters from the path
     // This is to replace the parameters with Postman's variable syntax
     // For example, if the path is "/users/:userId", it will be replaced with "/users/{{ userId }}"
@@ -198,16 +197,123 @@ INVALID MIDDLEWARE FIELD: middleware must be a function
     }
 
     // Construct request body
+    // let postmanBody = {};
+    // if (
+    //   ["POST", "PUT", "PATCH"].includes(this.method.toUpperCase()) &&
+    //   this.postman?.body
+    // ) {
+    //   postmanBody = {
+    //     mode: "raw",
+    //     raw: JSON.stringify(this.postman.body, null, 2),
+    //     options: { raw: { language: "json" } },
+    //   };
+    // }
+    // the old way
+
+    /**
+     * Let's use the new way to handle postman body
+     * by checkin if the headers are present, check if they have a content-type
+     *    - if they have a content-type of application/json we will build the body as a raw json object
+     *    - if they have a content-type of application/x-www-form-urlencoded we will build the body as a form object
+     *    - if they have a content-type of multipart/form-data we will build the body as a form-data object
+     *    - if they have a content-type of text/plain we will build the body as a text object
+     */
     let postmanBody = {};
-    if (
-      ["POST", "PUT", "PATCH"].includes(this.method.toUpperCase()) &&
-      this.postman?.body
-    ) {
-      postmanBody = {
-        mode: "raw",
-        raw: JSON.stringify(this.postman.body, null, 2),
-        options: { raw: { language: "json" } },
-      };
+
+    /**
+     * This is the default headers for the postman body
+     * if the headers are not present we will use this
+     */
+    const bodyConfig = {
+      headers: this.postman?.headers
+        ?.map((item) => {
+          const allowedKeys = ["Content-Type"];
+          const allowedValues = [
+            "application/json",
+            "application/xml",
+            "text/html",
+            "text/plain",
+            "application/x-www-form-urlencoded",
+            "multipart/form-data",
+            "image/jpeg",
+            "image/png",
+            "image/gif",
+            "application/pdf",
+            "text/css",
+            "application/javascript",
+          ];
+          if (
+            allowedKeys.includes(item.key) &&
+            allowedValues.includes(item.value)
+          ) {
+            return {
+              key: item.key,
+              value: item.value,
+              description: item.description || "",
+            };
+          }
+          return null;
+        })
+        .filter(Boolean) || [
+        { key: "Content-Type", value: "application/json" },
+      ],
+    };
+
+    const contentTypeHeader = bodyConfig.headers.find(
+      (header) => header?.key === "Content-Type"
+    );
+
+    if (contentTypeHeader) {
+      switch (contentTypeHeader.value) {
+        case "application/json":
+          postmanBody = {
+            mode: "raw",
+            raw: JSON.stringify(this.postman?.body || {}, null, 2),
+            options: { raw: { language: "json" } },
+          };
+          break;
+        case "application/x-www-form-urlencoded":
+          postmanBody = {
+            mode: "urlencoded",
+            urlencoded: Object.entries(this.postman?.body || {}).map(
+              ([key, value]) => ({ key, value: String(value) })
+            ),
+          };
+          break;
+        case "multipart/form-data":
+          postmanBody = {
+            mode: "formdata",
+            formdata: Object.entries(this.postman?.body || {}).map(
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              ([key, value]: [string, any]) => {
+                /**
+                 * Here is a tricky part, we need to check if the value is an object
+                 * if so we check if it has a type property
+                 * if it has a type property we use it as the type of the form-data
+                 * if not we use "text" as the type of the form-data
+                 */
+                if (typeof value === "object" && value !== null && value.type) {
+                  return {
+                    key,
+                    value: String(value.value || ""),
+                    type: value.type || "text",
+                  };
+                }
+                return { key, value: String(value), type: "text" };
+              }
+            ),
+          };
+          break;
+        case "text/plain":
+          postmanBody = {
+            mode: "raw",
+            raw: String(this.postman?.body || ""),
+            options: { raw: { language: "text" } },
+          };
+          break;
+        default:
+          postmanBody = {};
+      }
     }
 
     return {

@@ -2,7 +2,6 @@ import { Express, Handler, RequestParamHandler } from "express";
 import Route from "../core/Route";
 import Routes from "../core/Routes";
 import ErrorRoute from "../core/ErrorRoute";
-
 interface Param {
   path: string;
   method: RequestParamHandler;
@@ -20,6 +19,33 @@ interface IRoutes {
   module?: string;
 }
 
+
+type ContentTypeValues =
+  | "application/json"
+  | "application/xml"
+  | "text/html"
+  | "text/plain"
+  | "application/x-www-form-urlencoded"
+  | "multipart/form-data"
+  | "image/jpeg"
+  | "image/png"
+  | "image/gif"
+  | "application/pdf"
+  | "text/css"
+  | "application/javascript";
+
+type HeaderItem<K extends string = string> = {
+  key: K;
+  value: K extends "Content-Type" ? ContentTypeValues | string : string;
+  description?: string;
+};
+
+interface IRoutePostman {
+  headers?: Array<HeaderItem>;
+  body?: Record<string, unknown>;
+  params?: Array<{ key: string; value: string; description: string }>;
+}
+
 interface IRoute {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
@@ -28,10 +54,7 @@ interface IRoute {
   description?: string;
   rai: string;
   roles: string[];
-  postman?: {
-    body: Record<string, unknown>;
-    params?: Array<{ key: string; value: string; description: string }>;
-  };
+  postman?: IRoutePostman;
 }
 
 interface IPostmanUrl {

@@ -5,6 +5,6 @@ declare class AppWrapper extends PostmanController {
     private app;
     private roles?;
     constructor(config: AppWrapperConfig);
-    getExpressApp(middlewares?: RequestHandler[]): Express;
+    getExpressApp(middlewares?: RequestHandler[], postMiddlewares?: RequestHandler[]): Express;
 }
 export default AppWrapper;

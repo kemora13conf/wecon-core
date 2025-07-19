@@ -13,14 +13,7 @@ declare class Route<T = any> {
     description: string;
     rai: string;
     roles: string[];
-    postman?: {
-        body?: Record<string, unknown>;
-        params?: Array<{
-            key: string;
-            value: string;
-            description: string;
-        }>;
-    };
+    postman?: IRoute["postman"];
     constructor(r: IRoute);
     /**
      * This function is used to register a module to the route
