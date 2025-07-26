@@ -1,4 +1,4 @@
-import { Router, Handler } from "express";
+import { Router, Handler, RequestHandler } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { IPostmanUrl, IRoute } from "../types";
 import { PostmanRouteItem } from "../types/postman";
@@ -12,7 +12,8 @@ class Route<T = any> {
   id: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
-  middlewares: Handler[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  middlewares: Handler[] | RequestHandler[] | any[];
   name: string;
   description: string;
   rai: string;

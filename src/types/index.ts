@@ -1,4 +1,4 @@
-import { Express, Handler, RequestParamHandler } from "express";
+import { Express, Handler, RequestHandler, RequestParamHandler } from "express";
 import Route from "../core/Route";
 import Routes from "../core/Routes";
 import ErrorRoute from "../core/ErrorRoute";
@@ -49,7 +49,8 @@ interface IRoutePostman {
 interface IRoute {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
-  middlewares: Handler[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  middlewares: Handler[] | RequestHandler[] | any[];
   name?: string;
   description?: string;
   rai: string;
