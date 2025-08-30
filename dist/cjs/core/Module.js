@@ -1,4 +1,9 @@
-import Routes from "./Routes";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Routes_1 = __importDefault(require("./Routes"));
 class Module {
     /**
      * Module class to encapsulate routes and bootstrap functionality
@@ -18,7 +23,7 @@ class Module {
         if (!config.routes) {
             throw new Error("Module routes are required");
         }
-        if (!(config.routes instanceof Routes)) {
+        if (!(config.routes instanceof Routes_1.default)) {
             throw new Error("Module routes must be an instance of Routes");
         }
         if (config.bootstrap &&
@@ -37,4 +42,4 @@ class Module {
         routes.registerModule(this);
     }
 }
-export default Module;
+exports.default = Module;

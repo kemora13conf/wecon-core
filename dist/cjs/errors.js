@@ -1,34 +1,42 @@
+"use strict";
 /**
  * Custom errors
  */
-export class ApiRouteNotFoundError extends Error {
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.SocketIOError = exports.SocketAuthError = exports.NotFoundRouteError = exports.InvalidRouteError = exports.ApiRouteNotFoundError = void 0;
+class ApiRouteNotFoundError extends Error {
     constructor(message) {
         super(message);
         Object.setPrototypeOf(this, ApiRouteNotFoundError.prototype);
     }
 }
-export class InvalidRouteError extends Error {
+exports.ApiRouteNotFoundError = ApiRouteNotFoundError;
+class InvalidRouteError extends Error {
     constructor(message) {
         super(message);
         Object.setPrototypeOf(this, InvalidRouteError.prototype);
     }
 }
-export class NotFoundRouteError extends Error {
+exports.InvalidRouteError = InvalidRouteError;
+class NotFoundRouteError extends Error {
     constructor(message) {
         super(message);
         Object.setPrototypeOf(this, NotFoundRouteError.prototype);
     }
 }
-export class SocketAuthError extends Error {
+exports.NotFoundRouteError = NotFoundRouteError;
+class SocketAuthError extends Error {
     constructor(message) {
         super(message);
         Object.setPrototypeOf(this, SocketAuthError.prototype);
     }
 }
-export class SocketIOError extends Error {
+exports.SocketAuthError = SocketAuthError;
+class SocketIOError extends Error {
     constructor(message) {
         super(message);
         this.message = message;
         Object.setPrototypeOf(this, SocketIOError.prototype);
     }
 }
+exports.SocketIOError = SocketIOError;

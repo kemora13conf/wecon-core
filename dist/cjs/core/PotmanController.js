@@ -1,17 +1,22 @@
-import PostmanGenerator from "../generators/Postman";
-import Routes from "./Routes";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const Postman_1 = __importDefault(require("../generators/Postman"));
+const Routes_1 = __importDefault(require("./Routes"));
 class PostmanController {
     constructor(routes, postman) {
-        this.routes = routes ? routes : new Routes({ prefix: "", routes: [] });
+        this.routes = routes ? routes : new Routes_1.default({ prefix: "", routes: [] });
         this.postman = postman;
     }
     generatePostmanCollection(filePath) {
         if (this.postman) {
-            const postmanGen = new PostmanGenerator(this.postman.name, this.postman.description, {
+            const postmanGen = new Postman_1.default(this.postman.name, this.postman.description, {
                 version: this.postman.version,
                 baseUrl: this.postman.baseUrl,
             });
-            postmanGen.generateCollection(new Routes({
+            postmanGen.generateCollection(new Routes_1.default({
                 prefix: "",
                 routes: [this.routes],
             }).generateFolder());
@@ -23,11 +28,11 @@ class PostmanController {
     }
     generatePostmanEnvironment(filePath) {
         if (this.postman) {
-            const postmanGen = new PostmanGenerator(this.postman.name, this.postman.description, {
+            const postmanGen = new Postman_1.default(this.postman.name, this.postman.description, {
                 version: this.postman.version,
                 baseUrl: this.postman.baseUrl,
             });
-            postmanGen.generateEnvironment(new Routes({
+            postmanGen.generateEnvironment(new Routes_1.default({
                 prefix: "",
                 routes: [this.routes],
             }).generateFolder());
@@ -38,4 +43,4 @@ class PostmanController {
         }
     }
 }
-export default PostmanController;
+exports.default = PostmanController;

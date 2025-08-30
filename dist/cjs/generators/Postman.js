@@ -1,4 +1,9 @@
-import fs from "fs";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const fs_1 = __importDefault(require("fs"));
 class PostmanGenerator {
     /**
      * Constructs a new instance of the PostmanGenerator class.
@@ -249,7 +254,7 @@ class PostmanGenerator {
      * @param options - File writing options
      */
     saveCollectionToFile(filePath, options = { encoding: 'utf8', flag: 'w' }) {
-        fs.writeFileSync(filePath, JSON.stringify(this.collection, null, 2), options);
+        fs_1.default.writeFileSync(filePath, JSON.stringify(this.collection, null, 2), options);
     }
     /**
      * Save the Postman environment to a JSON file
@@ -257,7 +262,7 @@ class PostmanGenerator {
      * @param options - File writing options
      */
     saveEnvironmentToFile(filePath, options = { encoding: 'utf8', flag: 'w' }) {
-        fs.writeFileSync(filePath, JSON.stringify(this.environment, null, 2), options);
+        fs_1.default.writeFileSync(filePath, JSON.stringify(this.environment, null, 2), options);
     }
     /**
      * Save both collection and environment files
@@ -270,4 +275,4 @@ class PostmanGenerator {
         this.saveEnvironmentToFile(environmentPath, options);
     }
 }
-export default PostmanGenerator;
+exports.default = PostmanGenerator;

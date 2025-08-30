@@ -1,6 +1,11 @@
-import { Router } from "express";
-import Route from "./Route";
-import { InvalidRouteError } from "../errors";
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const Route_1 = __importDefault(require("./Route"));
+const errors_1 = require("../errors");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 class Routes {
     constructor(r) {
@@ -15,10 +20,10 @@ class Routes {
          * throw an error if not
          */
         if (!this.routes) {
-            throw new InvalidRouteError("Routes instance must have a routes property");
+            throw new errors_1.InvalidRouteError("Routes instance must have a routes property");
         }
         if (!Array.isArray(this.routes)) {
-            throw new InvalidRouteError("Routes instance routes must be an array");
+            throw new errors_1.InvalidRouteError("Routes instance routes must be an array");
         }
     }
     registerModule(module) {
@@ -27,7 +32,7 @@ class Routes {
             if (route instanceof Routes) {
                 route.registerModule(module);
             }
-            else if (route instanceof Route) {
+            else if (route instanceof Route_1.default) {
                 route.registerModule(module);
             }
             else if (typeof route === "object" && route !== null) {
@@ -36,7 +41,7 @@ class Routes {
         });
     }
     buildRouter(p_router, p_prefix) {
-        const router = p_router ? p_router : Router();
+        const router = p_router ? p_router : (0, express_1.Router)();
         let prefix = p_prefix ? p_prefix : { path: "" };
         prefix = {
             path: prefix.path + this.prefix,
@@ -56,11 +61,11 @@ class Routes {
             if (route instanceof Routes) {
                 route.buildRouter(router, prefix);
             }
-            else if (route instanceof Route) {
+            else if (route instanceof Route_1.default) {
                 route.buildRoute(router, this, prefix);
             }
             else {
-                throw new InvalidRouteError(`Invalid Route: ${route}`);
+                throw new errors_1.InvalidRouteError(`Invalid Route: ${route}`);
             }
         });
         return router;
@@ -69,7 +74,7 @@ class Routes {
         if (this.params) {
             this.params.forEach((param) => {
                 if (!param.path || typeof param.method !== "function") {
-                    throw new InvalidRouteError(`
+                    throw new errors_1.InvalidRouteError(`
 INVALID params FIELD: params must have a path and a method
     PATH: ${param.path}
     METHOD: ${typeof param.method === "function" ? "function" : "null"}
@@ -101,7 +106,7 @@ INVALID params FIELD: params must have a path and a method
             if (route instanceof Routes) {
                 return route.generateFolder(currentPathPrefix);
             }
-            else if (route instanceof Route) {
+            else if (route instanceof Route_1.default) {
                 return route.generateRoute(currentPathPrefix);
             }
             else {
@@ -119,4 +124,4 @@ INVALID params FIELD: params must have a path and a method
         return items;
     }
 }
-export default Routes;
+exports.default = Routes;

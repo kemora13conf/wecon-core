@@ -1,8 +1,13 @@
-import AppWrapper from "./core/AppWrapper";
-import Route from "./core/Route";
-import Routes from "./core/Routes";
-import express from "express";
-const userRoutes = new Routes({
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const AppWrapper_1 = __importDefault(require("./core/AppWrapper"));
+const Route_1 = __importDefault(require("./core/Route"));
+const Routes_1 = __importDefault(require("./core/Routes"));
+const express_1 = __importDefault(require("express"));
+const userRoutes = new Routes_1.default({
     prefix: "/users",
     params: [
         {
@@ -16,7 +21,7 @@ const userRoutes = new Routes({
         },
     ],
     routes: [
-        new Route({
+        new Route_1.default({
             path: "/",
             method: "GET",
             name: "Get all users",
@@ -35,13 +40,13 @@ const userRoutes = new Routes({
     },
 });
 // Define API routes
-const apiRoutes = new Routes({
+const apiRoutes = new Routes_1.default({
     prefix: "/api/v1",
     routes: [userRoutes],
 });
 // Initialize app wrapper
-const appWrapper = new AppWrapper({
-    app: express(),
+const appWrapper = new AppWrapper_1.default({
+    app: (0, express_1.default)(),
     routes: apiRoutes,
     postman: {
         name: "Example API",

@@ -1,9 +1,11 @@
-import { v4 as uuidv4 } from "uuid";
-import { InvalidRouteError } from "../errors";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const uuid_1 = require("uuid");
+const errors_1 = require("../errors");
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 class Route {
     constructor(r) {
-        this.id = uuidv4();
+        this.id = (0, uuid_1.v4)();
         this.method = r.method;
         this.path = r.path;
         this.middlewares = r.middlewares;
@@ -19,19 +21,19 @@ class Route {
          * throw an error if not
          */
         if (!this.method) {
-            throw new InvalidRouteError("Route instance must have a method");
+            throw new errors_1.InvalidRouteError("Route instance must have a method");
         }
         if (!this.path) {
-            throw new InvalidRouteError("Route instance must have a path");
+            throw new errors_1.InvalidRouteError("Route instance must have a path");
         }
         if (!this.rai) {
-            throw new InvalidRouteError("Route instance must have a rai");
+            throw new errors_1.InvalidRouteError("Route instance must have a rai");
         }
         if (!this.roles) {
-            throw new InvalidRouteError("Route instance must have a roles");
+            throw new errors_1.InvalidRouteError("Route instance must have a roles");
         }
         if (!Array.isArray(this.middlewares)) {
-            throw new InvalidRouteError("Route instance middlewares must be an array");
+            throw new errors_1.InvalidRouteError("Route instance middlewares must be an array");
         }
     }
     /**
@@ -69,7 +71,7 @@ class Route {
                             router.param(param.path, param.method);
                         }
                         else {
-                            throw new InvalidRouteError(`
+                            throw new errors_1.InvalidRouteError(`
 INVALID params FIELD: params must have a method
     PREFIX: ${route.prefix}
     PARAM: [
@@ -84,7 +86,7 @@ INVALID params FIELD: params must have a method
                         }
                     }
                     else {
-                        throw new InvalidRouteError(`
+                        throw new errors_1.InvalidRouteError(`
 INVALID params FIELD: params must have a path
     PREFIX: ${route.prefix}
             `);
@@ -92,7 +94,7 @@ INVALID params FIELD: params must have a path
                 });
             }
             else {
-                throw new InvalidRouteError(`
+                throw new errors_1.InvalidRouteError(`
 INVALID params FIELD: params must be an array 
     PREFIX: ${route.prefix}
         `);
@@ -104,7 +106,7 @@ INVALID params FIELD: params must be an array
          */
         this.middlewares.forEach((middleware) => {
             if (typeof middleware !== "function") {
-                throw new InvalidRouteError(`
+                throw new errors_1.InvalidRouteError(`
 INVALID MIDDLEWARE FIELD: middleware must be a function
     PATH: ${prefix.path + this.path}
     METHOD: ${this.method}
@@ -285,4 +287,4 @@ INVALID MIDDLEWARE FIELD: middleware must be a function
         };
     }
 }
-export default Route;
+exports.default = Route;

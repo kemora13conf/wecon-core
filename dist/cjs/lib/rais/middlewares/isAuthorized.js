@@ -1,5 +1,8 @@
-import { ApiRouteNotFoundError } from "../../../errors";
-export const isAuthorized = async (req, res, next) => {
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.isAuthorized = void 0;
+const errors_1 = require("../../../errors");
+const isAuthorized = async (req, res, next) => {
     try {
         // Get the current user roles
         const u_roles = [];
@@ -17,12 +20,12 @@ export const isAuthorized = async (req, res, next) => {
          */
         const rai = req.rai;
         if (!rai) {
-            return next(new ApiRouteNotFoundError("RAI not found"));
+            return next(new errors_1.ApiRouteNotFoundError("RAI not found"));
         }
         // Check if the user has the access to the rai by his roles
         const isAuthorized = rai.roles.some((role) => roles.some((r) => r._id === role));
         if (!isAuthorized) {
-            return next(new ApiRouteNotFoundError("Unauthorized access"));
+            return next(new errors_1.ApiRouteNotFoundError("Unauthorized access"));
         }
         return next();
     }
@@ -31,3 +34,4 @@ export const isAuthorized = async (req, res, next) => {
     }
     return next();
 };
+exports.isAuthorized = isAuthorized;
