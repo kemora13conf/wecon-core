@@ -40,7 +40,7 @@
     "start": "node --loader @swc/node/esm --no-warnings ./src/index.ts",
     "dev": "nodemon",
     "clean": "rimraf dist",
-    "build": "yarn run clean && tsc && tsc -p tsconfig.cjs.json",
+    "build": "yarn run clean && tsc && tsc -p tsconfig.cjs.json && echo '{\"type\":\"commonjs\"}' > dist/cjs/package.json",
     "prepublishOnly": "yarn run build",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
