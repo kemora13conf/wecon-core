@@ -1,8 +1,8 @@
 {
   "name": "@vortex-js/core",
-  "version": "0.6.2",
+  "version": "1.0.0",
   "main": "dist/cjs/index.js",
-  "module": "dist/index.js", 
+  "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
@@ -11,7 +11,7 @@
         "default": "./dist/index.js"
       },
       "require": {
-        "types": "./dist/cjs/index.d.ts", 
+        "types": "./dist/cjs/index.d.ts",
         "default": "./dist/cjs/index.js"
       }
     }
