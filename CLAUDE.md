@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**@vortex-js/core** is a TypeScript framework for building Express.js APIs with built-in role-based access control (RBAC) and automatic Postman documentation generation. This is a published npm package that provides:
+**@wecon/core** is a TypeScript framework for building Express.js APIs with built-in role-based access control (RBAC) and automatic Postman documentation generation. This is a published npm package that provides:
 
 - Role-based access control with Resource Access Identifiers (RAIs)
 - Hierarchical route organization with shared middleware
@@ -38,7 +38,7 @@ yarn publish:npm            # Build and publish to npm
 The framework uses a hierarchical architecture built around these main classes:
 
 - **AppWrapper**: Main entry point that wraps Express apps and configures RBAC
-- **Routes**: Groups of routes with shared prefixes, middleware, and organization  
+- **Routes**: Groups of routes with shared prefixes, middleware, and organization
 - **Route**: Individual API endpoints with RBAC configuration
 - **Module**: Logical grouping for route organization
 - **ErrorRoute**: Custom error handling for route groups
@@ -57,6 +57,7 @@ src/
 ### RBAC System (RAI)
 
 Routes use Resource Access Identifiers (RAIs) for access control:
+
 - Each route has an RAI string (e.g., "users:read", "products:create")
 - Routes specify which roles can access them
 - Built-in middleware (`findRequestRai`, `isAuthorized`) handles authorization
@@ -65,6 +66,7 @@ Routes use Resource Access Identifiers (RAIs) for access control:
 ### Route Building
 
 Routes are built in this flow:
+
 1. `AppWrapper.getExpressApp()` initializes RAIs and applies middleware
 2. `Routes.buildRouter()` recursively builds Express routers
 3. `Route.buildRoute()` registers individual endpoints with validation
@@ -73,6 +75,7 @@ Routes are built in this flow:
 ### Postman Generation
 
 The framework automatically generates Postman documentation:
+
 - `PostmanGenerator` creates collections and environments
 - Routes provide example bodies, parameters, and headers
 - Supports multiple content types (JSON, form-data, urlencoded)
@@ -88,6 +91,7 @@ The framework automatically generates Postman documentation:
 ## Type Safety
 
 The codebase uses strict TypeScript settings:
+
 - All routes must have RAI and roles defined
 - Middleware arrays are type-checked as Express handlers
 - Comprehensive interfaces for all configuration objects
@@ -96,6 +100,7 @@ The codebase uses strict TypeScript settings:
 ## Testing Notes
 
 No test framework is currently configured. When adding tests:
+
 - Check existing patterns in similar Express.js projects
 - Consider testing route building, RBAC middleware, and Postman generation
 - Mock Express request/response objects for unit testing

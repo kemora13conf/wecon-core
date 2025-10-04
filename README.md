@@ -1,6 +1,6 @@
-# Vortex-JS/Core
+# wecon/Core
 
-[![npm version](https://img.shields.io/npm/v/@vortex-js/core.svg)](https://www.npmjs.com/package/@vortex-js/core)
+[![npm version](https://img.shields.io/npm/v/@wecon/core.svg)](https://www.npmjs.com/package/@wecon/core)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 A comprehensive TypeScript framework for building Express.js APIs with built-in role-based access control (RBAC) and automatic Postman documentation generation.
@@ -35,9 +35,9 @@ A comprehensive TypeScript framework for building Express.js APIs with built-in 
 ## Installation
 
 ```bash
-npm install @vortex-js/core
+npm install @wecon/core
 # or
-yarn add @vortex-js/core
+yarn add @wecon/core
 ```
 
 ## Quick Start
@@ -46,7 +46,7 @@ Here's a simple example to get you started:
 
 ```typescript
 import express from "express";
-import { AppWrapper, Routes, Route } from "@vortex-js/core";
+import { AppWrapper, Routes, Route } from "@wecon/core";
 
 // Create your Express app
 const app = express();
@@ -433,7 +433,7 @@ This example shows how to set up a basic API with JWT authentication:
 ```typescript
 import express from "express";
 import jwt from "jsonwebtoken";
-import { AppWrapper, Routes, Route } from "@vortex-js/core";
+import { AppWrapper, Routes, Route } from "@wecon/core";
 
 const app = express();
 app.use(express.json());
@@ -723,7 +723,7 @@ This example shows how to implement custom error handling:
 
 ```typescript
 import express from "express";
-import { AppWrapper, Routes, Route, ErrorRoute } from "@vortex-js/core";
+import { AppWrapper, Routes, Route, ErrorRoute } from "@wecon/core";
 
 const app = express();
 app.use(express.json());

@@ -1,5 +1,5 @@
 {
-  "name": "@vortex-js/core",
+  "name": "@wecon/core",
   "version": "1.0.1",
   "main": "dist/cjs/index.js",
   "module": "dist/index.js",
@@ -20,7 +20,7 @@
     "dist"
   ],
   "type": "module",
-  "repository": "https://github.com/kemora13conf/vortex-js-core.git",
+  "repository": "https://github.com/kemora13conf/wecon-core.git",
   "author": "Abdelghani El Mouak <abdelghanielmouak@gmail.com>",
   "license": "MIT",
   "publishConfig": {
