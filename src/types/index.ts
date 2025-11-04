@@ -1,4 +1,4 @@
-import { Express, Handler, RequestHandler, RequestParamHandler } from "express";
+import { Handler, RequestHandler, RequestParamHandler } from "express";
 import Route from "../core/Route";
 import Routes from "../core/Routes";
 import ErrorRoute from "../core/ErrorRoute";
@@ -18,7 +18,6 @@ interface IRoutes {
   };
   module?: string;
 }
-
 
 type ContentTypeValues =
   | "application/json"
@@ -70,18 +69,17 @@ interface IPostmanUrl {
   }>;
 }
 
-interface AppWrapperConfig {
-  app: Express;
-  routes: Routes;
-  postman?: PostmanConfig;
-  roles?: string[];
-}
-
 interface PostmanConfig {
   name: string;
   description?: string;
   version?: string;
   baseUrl?: string;
+}
+
+interface TheLastMiddlewareConfig {
+  rootRoutes: Routes;
+  roles: Array<string>;
+  guestRole: string;
 }
 
 interface ModuleConfig {
@@ -98,7 +96,7 @@ export type {
   IRoute,
   IRoutes,
   Param,
-  AppWrapperConfig,
+  TheLastMiddlewareConfig,
   PostmanConfig,
   ModuleConfig,
 };

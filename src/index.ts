@@ -6,7 +6,7 @@
  */
 
 // Core exports
-import AppWrapper from "./core/AppWrapper";
+import AppWrapper from "./core/TheLastMiddleware";
 import Route from "./core/Route";
 import Routes from "./core/Routes";
 import ErrorRoute from "./core/ErrorRoute";

@@ -68,9 +68,17 @@ Routes use Resource Access Identifiers (RAIs) for access control:
 Routes are built in this flow:
 
 1. `AppWrapper.getExpressApp()` initializes RAIs and applies middleware
-2. `Routes.buildRouter()` recursively builds Express routers
-3. `Route.buildRoute()` registers individual endpoints with validation
-4. Middleware order: custom → RAI middleware → route middleware
+2. `InitializeCreatingRAIs()` extracts all RAIs and roles from the route hierarchy
+3. RAI data is stored in `app.locals.rais` and `app.locals.roles` for middleware access
+4. Global RBAC middleware (`findRequestRai`, `isAuthorized`) is registered first
+5. `Routes.buildRouter()` recursively builds Express routers with nested route support
+6. `Route.buildRoute()` registers individual endpoints with validation
+7. Middleware execution order:
+   - Global RBAC middleware (applied to all routes)
+   - Pre-route middleware (from `getExpressApp()` middlewares param)
+   - Routes group middleware (shared across route groups)
+   - Route-specific middleware (individual route handlers)
+   - Post-route middleware (from `getExpressApp()` postMiddlewares param)
 
 ### Postman Generation
 
@@ -78,13 +86,21 @@ The framework automatically generates Postman documentation:
 
 - `PostmanGenerator` creates collections and environments
 - Routes provide example bodies, parameters, and headers
-- Supports multiple content types (JSON, form-data, urlencoded)
-- Generates proper Postman variable syntax for path parameters
+- Supports multiple content types (JSON, form-data, urlencoded, text/plain)
+- Content-Type header determines body format in generated collection
+- Path parameters are automatically converted (`:id` → `{{id}}`)
+- All Postman variables are automatically extracted and added to environment file
+- Routes are numbered sequentially in the collection for easier navigation
+- `PostmanController` extends `PostmanGenerator` and is used by `AppWrapper`
 
 ## Build Configuration
 
 - **TypeScript**: Targets ES2020, outputs to `dist/` with declarations
-- **Module System**: Uses ES modules (`"type": "module"` in package.json)
+- **Dual Module System**: Builds both ESM (`dist/`) and CommonJS (`dist/cjs/`) outputs
+  - Main ESM build: `tsc` using `tsconfig.json`
+  - CJS build: `tsc -p tsconfig.cjs.json` extending main config with `module: "commonjs"`
+  - CJS package marker: Automatically adds `package.json` with `"type": "commonjs"` to `dist/cjs/`
+  - Package exports configured for both systems in root `package.json`
 - **Compilation**: Standard TypeScript compilation, no bundling
 - **SWC**: Used for development server with fast transpilation
 
@@ -112,3 +128,8 @@ No test framework is currently configured. When adding tests:
 - Custom error handling works through ErrorRoute middleware registration
 - The framework supports both flat and nested route structures
 - All routes must be wrapped in Routes instances, even single routes
+- `Module` class allows logical grouping of routes with metadata (optional feature)
+- Route and Routes both support generic types for custom module type safety
+- Middleware validation happens at route build time, not construction time
+- Params can be defined at Routes level and are inherited by nested routes
+- Error handlers are registered before routes in the middleware stack
