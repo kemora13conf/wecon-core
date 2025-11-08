@@ -1,13 +1,13 @@
 import { Handler, RequestHandler, RequestParamHandler } from "express";
 import Route from "../core/Route";
 import Routes from "../core/Routes";
-import ErrorRoute from "../core/ErrorRoute";
+import ErrorRoute from "../core/CoreError";
 interface Param {
   path: string;
-  method: RequestParamHandler;
+  middelware: RequestParamHandler;
 }
 
-interface IRoutes {
+interface RoutesConfig {
   prefix?: string;
   routes: Array<Route | Routes>;
   error?: ErrorRoute;
@@ -39,13 +39,13 @@ type HeaderItem<K extends string = string> = {
   description?: string;
 };
 
-interface IRoutePostman {
+interface RouteConfigPostman {
   headers?: Array<HeaderItem>;
   body?: Record<string, unknown>;
   params?: Array<{ key: string; value: string; description: string }>;
 }
 
-interface IRoute {
+interface RouteConfig {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -54,7 +54,7 @@ interface IRoute {
   description?: string;
   rai: string;
   roles: string[];
-  postman?: IRoutePostman;
+  postman?: RouteConfigPostman;
 }
 
 interface IPostmanUrl {
@@ -93,8 +93,8 @@ interface ModuleConfig {
 
 export type {
   IPostmanUrl,
-  IRoute,
-  IRoutes,
+  RouteConfig,
+  RoutesConfig,
   Param,
   TheLastMiddlewareConfig,
   PostmanConfig,

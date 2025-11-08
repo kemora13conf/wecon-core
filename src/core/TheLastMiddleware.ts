@@ -1,19 +1,19 @@
 /**
  * The Last Middleware - Dynamic Route Authorization & Matching
- * 
+ *
  * @module TheLastMiddleware
  * @author Abdelghani El Mouak
  * @license MIT
- * 
- * @description 
+ *
+ * @description
  * A smart routing middleware that automatically handles authorization and route matching:
- * 
+ *
  * **How it works:**
  * 1. **Route Caching** - Creates and caches Express Routers for each endpoint using RAI (Route Authorization Identifier)
  * 2. **Request Matching** - Identifies incoming requests by their RAI
  * 3. **Authorization** - Validates user permissions before routing
  * 4. **Smart Forwarding** - Routes authorized requests to their cached Router
- * 
+ *
  * **Why use this?**
  * - ⚡ Performance: Routes are pre-built and cached in a Map
  * - 🔒 Security: Built-in authorization layer
@@ -21,17 +21,9 @@
  * - 📦 Centralized: Single point of control for all route handling
  */
 
-
-import { 
-    NextFunction, Request, 
-    Response,
-    Router
- } from "express";
+import { NextFunction, Request, Response } from "express";
 import { TheLastMiddlewareConfig } from "../types";
-import PostmanController from "./PotmanController";
-import { findRequestRai } from "../lib/rais/middlewares/findRequestRai";
-import { isAuthorized } from "../lib/rais/middlewares/isAuthorized";
-import { InitializeCreatingRAIs } from "../lib/rais";
+import Routes from "./Routes";
 
 /**
  * The last middleware to be used in the application. It handles route matching,
@@ -40,13 +32,37 @@ import { InitializeCreatingRAIs } from "../lib/rais";
  * @param config - Configuration object containing root routes, roles, and guest role.
  * @returns An Express middleware function.
  */
-export function TheLastMiddleware(
-    config: TheLastMiddlewareConfig
-) {
-    const { rootRoutes, roles, guestRole } = config;
+export function TheLastMiddleware(config: TheLastMiddlewareConfig) {
+  const { rootRoutes, roles, guestRole = "guest" } = config;
 
-    const RaisMap = new Map<string, Router>();
+  /**
+   * Validate the configuration object.
+   * @throws Will throw an error if the configuration is invalid.
+   */
+  switch (true) {
+    case !Array.isArray(rootRoutes):
+      throw new Error(
+        "TheLastMiddleware: 'rootRoutes' must be an array of Routes."
+      );
+    case !(rootRoutes instanceof Routes):
+      throw new Error(
+        "TheLastMiddleware: 'rootRoutes' must be an instance of the Routes class."
+      );
+    case !Array.isArray(roles):
+      throw new Error(
+        "TheLastMiddleware: 'roles' must be an array of role definitions."
+      );
+    case typeof guestRole !== "string":
+      throw new Error(
+        "TheLastMiddleware: 'guestRole' must be a string representing the guest role."
+      );
+  }
 
-    return async (req: Request, res: Response, next: NextFunction) => {};
-};
+  const RaisMap = rootRoutes.groupRoutesByRai();
 
+  console.log("RaisMap:", RaisMap);
+
+  return async (req: Request, res: Response, next: NextFunction) => {};
+}
+
+export default TheLastMiddleware;

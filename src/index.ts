@@ -9,7 +9,7 @@
 import AppWrapper from "./core/TheLastMiddleware";
 import Route from "./core/Route";
 import Routes from "./core/Routes";
-import ErrorRoute from "./core/ErrorRoute";
+import ErrorRoute from "./core/CoreError";
 import Module from "./core/Module";
 
 // RAI system exports
@@ -23,8 +23,8 @@ import PostmanGenerator from "./generators/Postman";
 
 // Type exports
 import {
-  IRoute,
-  IRoutes,
+  RouteConfig,
+  RoutesConfig,
   Param,
   AppWrapperConfig,
   PostmanConfig,
@@ -70,8 +70,8 @@ export {
   PostmanGenerator,
 
   // Types
-  IRoute,
-  IRoutes,
+  RouteConfig,
+  RoutesConfig,
   Param,
   AppWrapperConfig,
   PostmanConfig,

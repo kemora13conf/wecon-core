@@ -304,12 +304,12 @@ interface PostmanConfig {
 
 ```typescript
 class Routes {
-  constructor(r: IRoutes);
+  constructor(r: RoutesConfig);
   buildRouter(p_router?: Router, p_prefix?: { path: string }): Router;
   generateFolder(pathPrefix?: string): PostmanRouteItem[] | PostmanRouteItem;
 }
 
-interface IRoutes {
+interface RoutesConfig {
   prefix?: string;
   routes: Array<Route | Routes>;
   error?: ErrorRoute;
@@ -331,12 +331,12 @@ interface Param {
 
 ```typescript
 class Route {
-  constructor(r: IRoute);
+  constructor(r: RouteConfig);
   buildRoute(router: Router, route: Routes, prefix: { path: string }): void;
   generateRoute(pathPrefix?: string): PostmanRouteItem;
 }
 
-interface IRoute {
+interface RouteConfig {
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
   middlewares: Handler[];
