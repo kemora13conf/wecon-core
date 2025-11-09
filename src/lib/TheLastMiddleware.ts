@@ -21,8 +21,8 @@
  * - 📦 Centralized: Single point of control for all route handling
  */
 
-import { NextFunction, Request, Response } from "express";
-import { TheLastMiddlewareConfig } from "../types";
+import { NextFunction, Request, Response, Router } from "express";
+import { RAI, TheLastMiddlewareConfig } from "../types";
 import Routes from "./Routes";
 
 /**
@@ -57,10 +57,54 @@ export function TheLastMiddleware(config: TheLastMiddlewareConfig) {
         "TheLastMiddleware: 'guestRole' must be a string representing the guest role."
       );
   }
-
+  /**
+   * Group routes by their RAI for efficient lookup during request handling.
+   * This creates a Map where each key is a RAI and the value is the corresponding Route.
+   */
   const RaisMap = rootRoutes.groupRoutesByRai();
 
-  console.log("RaisMap:", RaisMap);
+  /**
+   * Now we have to turn each Route in the RaisMap into an Express Router
+   * and store it back in the map for quick access during request handling.
+   */
+  const RouterMap = new Map<RAI, Router>();
+  RaisMap.forEach((route, rai) => {
+    const router = Router();
+
+    // Attache all params to the router
+    route.params.forEach((param) => {
+      router.param(param.path, param.middleware);
+    });
+
+    // Attach all middlewares to the router
+    route.middlewares.forEach((mw) => {
+      router.use(mw);
+    });
+    // Define the route handler
+    switch (route.method) {
+      case "GET":
+        router.get(route.path, (req: Request, res: Response) => {
+          res.end();
+        });
+        break;
+      case "POST":
+        router.post(route.path, (req: Request, res: Response) => {
+          res.end();
+        });
+        break;
+      case "PUT":
+        router.put(route.path, (req: Request, res: Response) => {
+          res.end();
+        });
+        break;
+      case "DELETE":
+        router.delete(route.path, (req: Request, res: Response) => {
+          res.end();
+        });
+        break;
+    }
+    RouterMap.set(rai, router);
+  });
 
   return async (req: Request, res: Response, next: NextFunction) => {};
 }

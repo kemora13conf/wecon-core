@@ -1,17 +1,18 @@
 import { Handler, RequestHandler, RequestParamHandler } from "express";
-import Route from "../core/Route";
-import Routes from "../core/Routes";
-import ErrorRoute from "../core/CoreError";
+import Route from "../lib/Route";
+import Routes from "../lib/Routes";
+import ErrorRoute from "../lib/CoreError";
+import RoutesParam from "../lib/RoutesParam";
 interface Param {
   path: string;
-  middelware: RequestParamHandler;
+  middleware: RequestParamHandler;
 }
 
 interface RoutesConfig {
   prefix?: string;
   routes: Array<Route | Routes>;
   error?: ErrorRoute;
-  params?: Param[];
+  params?: RoutesParam[];
   middlewares?: Handler[];
   postman?: {
     folderName: string;
@@ -57,46 +58,12 @@ interface RouteConfig {
   postman?: RouteConfigPostman;
 }
 
-interface IPostmanUrl {
-  raw: string;
-  protocol?: string;
-  host: string[];
-  path: string[];
-  query?: Array<{
-    key: string;
-    value: string;
-    description?: string;
-  }>;
-}
-
-interface PostmanConfig {
-  name: string;
-  description?: string;
-  version?: string;
-  baseUrl?: string;
-}
-
 interface TheLastMiddlewareConfig {
   rootRoutes: Routes;
   roles: Array<string>;
   guestRole: string;
 }
 
-interface ModuleConfig {
-  name: string;
-  routes: Routes;
-  bootstrap?: () => Promise<void> | void;
-  i18n?: {
-    [key: string]: Record<string, unknown>;
-  };
-}
+type RAI = string;
 
-export type {
-  IPostmanUrl,
-  RouteConfig,
-  RoutesConfig,
-  Param,
-  TheLastMiddlewareConfig,
-  PostmanConfig,
-  ModuleConfig,
-};
+export type { Param, RouteConfig, RoutesConfig, TheLastMiddlewareConfig, RAI };

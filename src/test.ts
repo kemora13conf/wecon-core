@@ -1,5 +1,5 @@
-import Route from "./core/Route";
-import Routes from "./core/Routes";
+import Route from "./lib/Route";
+import Routes from "./lib/Routes";
 
 const routes = new Routes({
   prefix: "/user/users",
@@ -38,7 +38,7 @@ const routes = new Routes({
           method: "POST",
           name: "Update user profile",
           description: "Update the profile of the logged-in user",
-          roles: ["admin", "user"],
+          // roles: ["admin", "user"],
           rai: "user.profile:update",
           middlewares: [
             (req, res) => {
@@ -48,6 +48,7 @@ const routes = new Routes({
         }),
       ],
     }),
+
     new Route({
       path: "/create",
       method: "POST",
@@ -65,8 +66,12 @@ const routes = new Routes({
   postman: {
     folderName: "User Management",
   },
-}).groupRoutesByRai();
+});
+// .groupRoutesByRai();
 
-console.log("Grouped Routes by RAI:", new Array(...routes.entries()).flat().filter((item) => {
-  return typeof item !== "string";
-}));
+// console.log(
+//   "Grouped Routes by RAI:",
+//   new Array(...routes.entries()).flat().filter((item) => {
+//     return typeof item !== "string";
+//   })
+// );

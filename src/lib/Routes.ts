@@ -1,48 +1,115 @@
 import { Handler } from "express";
 import Route from "./Route";
 import ErrorRoute from "./CoreError";
-import { RoutesConfig, Param } from "../types";
-import { InvalidRouteError } from "../errors";
+import { RoutesConfig } from "../types";
 import Module from "./Module";
+import RoutesParam from "./RoutesParam";
+import BaseClass from "./BaseClass";
+import chalk from "chalk";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-class Routes<T = any> {
+class Routes<T = any> extends BaseClass {
   module?: Module<T>;
   prefix: string;
   error?: ErrorRoute;
   routes: Array<Route | Routes>;
-  params?: Param[];
+  params?: RoutesParam[];
   middlewares?: Handler[];
   postman?: {
     folderName: string;
   };
 
   constructor(r: RoutesConfig) {
+    super(); // Call the BaseClass constructor
+
     this.prefix = r.prefix ? r.prefix : "";
     this.routes = r.routes;
     this.params = r.params ? r.params : [];
     this.middlewares = r.middlewares ? r.middlewares : [];
     this.postman = r.postman ? r.postman : { folderName: "" };
 
-    /**
-     * All the required fields must gevin
-     * throw an error if not
-     */
+    try {
+      this.validateRoutes();
+    } catch (err) {
+      const errInfo = this.getCallerInfo();
+      this.handleConfigError(err as Error, errInfo);
+    }
+  }
+
+  private validateRoutes(): void {
     if (!this.routes) {
-      throw new InvalidRouteError(
-        "Routes instance must have a routes property"
-      );
+      throw new Error("MISSING_ROUTES");
     }
     if (!Array.isArray(this.routes)) {
-      throw new InvalidRouteError("Routes instance routes must be an array");
+      throw new Error("INVALID_ROUTES_TYPE");
     }
+  }
+
+  private handleConfigError(
+    err: Error,
+    errInfo: {
+      file: string;
+      line: number;
+      column: number;
+    }
+  ): void {
+    const errorMessages: Record<
+      string,
+      { title: string; details: string; fix: string }
+    > = {
+      MISSING_ROUTES: {
+        title: "Missing required 'routes' property",
+        details: "The Routes instance requires a 'routes' array to be defined",
+        fix: "Add a routes array to your configuration:\n    routes: [{ path: '/example', method: 'GET', handler: ... }]",
+      },
+      INVALID_ROUTES_TYPE: {
+        title: "Invalid 'routes' property type",
+        details:
+          "The 'routes' property must be an array, but received: " +
+          typeof this.routes,
+        fix: "Ensure routes is an array:\n    routes: [...] // not routes: {...}",
+      },
+    };
+
+    const errorConfig = errorMessages[err.message] || {
+      title: err.message,
+      details: "An unexpected error occurred",
+      fix: "Please check your Routes configuration",
+    };
+
+    console.error(
+      chalk.red.bold(
+        "\n╔══════════════════════════════════════════════════════════╗"
+      ),
+      chalk.red.bold("\n║") +
+        chalk.white.bold(
+          "  Routes Configuration Error                           "
+        ) +
+        chalk.red.bold("   ║"),
+      chalk.red.bold(
+        "\n╚══════════════════════════════════════════════════════════╝\n"
+      )
+    );
+
+    console.error(chalk.red.bold("✖ Error:"), chalk.white(errorConfig.title));
+    console.error(chalk.gray("\n  Details:"), chalk.white(errorConfig.details));
+    console.error(
+      chalk.gray("\n  Location:"),
+      chalk.cyan(`${errInfo.file}:${errInfo.line}:${errInfo.column}`)
+    );
+    console.error(chalk.yellow.bold("\n  💡 How to fix:"));
+    console.error(chalk.yellow(`  ${errorConfig.fix.replace(/\n/g, "\n  ")}`));
+    console.error(""); // Empty line for spacing
+
+    // exit the process with failure
+    process.exit(1);
   }
 
   public groupRoutesByRai() {
     const raiMap = new Map<
       string,
       Route & {
-        params: Param[];
+        params: RoutesParam[];
         middlewares: Handler[];
       }
     >();
@@ -113,7 +180,7 @@ class Routes<T = any> {
         .join("");
 
       // Retrieve the list of params from all Routes instances in the branch
-      const allParams: Param[] = [];
+      const allParams: RoutesParam[] = [];
       branch.forEach((item) => {
         if (item instanceof Routes && item.params) {
           allParams.push(...item.params);
@@ -134,23 +201,31 @@ class Routes<T = any> {
          * because RAI must be unique
          */
         // TODO: improve error message to show both routes paths
-        throw new InvalidRouteError(
+        throw new Error(
           `Duplicate RAI found: ${rai} for paths "${
             raiMap.get(rai)?.path
           }" and "${fullPath}"`
         );
       } else {
         console.log("Adding RAI to map:", rai, "for path:", fullPath);
-        raiMap.set(rai, {
-          ...route,
-          path: fullPath,
-          params: allParams,
-          middlewares: allMiddlewares,
-        });
+        const extendedRoute = Object.assign(
+          Object.create(Object.getPrototypeOf(route)),
+          route,
+          {
+            path: fullPath,
+            params: allParams,
+            middlewares: allMiddlewares,
+          }
+        );
+        raiMap.set(rai, extendedRoute);
       }
     });
 
     return raiMap;
+  }
+
+  public test() {
+    throw new Error("Method not implemented.");
   }
 }
 
