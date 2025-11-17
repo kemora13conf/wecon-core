@@ -1,8 +1,29 @@
+import { validate } from "uuid";
 import Route from "./lib/Route";
 import Routes from "./lib/Routes";
+import RoutesParam from "./lib/RoutesParam";
 
 const routes = new Routes({
   prefix: "/user/users",
+  mergeParams: false,
+  params: [
+    new RoutesParam(
+      "userId",
+      (req, res, next, value) => {
+        console.log("User ID param value:", value);
+        next();
+      },
+      {
+        pattern: /^[0-9a-fA-F-]{36}$/,
+      }
+    ),
+  ],
+  middlewares: [
+    async (req, res, next) => {
+      console.log("Global middleware for /user/users");
+      next();
+    },
+  ],
   routes: [
     new Route({
       path: "/list",
@@ -18,7 +39,19 @@ const routes = new Routes({
       ],
     }),
     new Routes({
-      prefix: "/profile",
+      // prefix: "/profile",
+      params: [
+        new RoutesParam(
+          "profileId",
+          (req, res, next, value) => {
+            console.log("Profile ID param value:", value);
+            next();
+          },
+          {
+            pattern: /^[0-9]+$/,
+          }
+        ),
+      ],
       routes: [
         new Route({
           path: "/view",
@@ -38,8 +71,8 @@ const routes = new Routes({
           method: "POST",
           name: "Update user profile",
           description: "Update the profile of the logged-in user",
-          // roles: ["admin", "user"],
-          rai: "user.profile:update",
+          roles: ["admin", "user"],
+          rai: "user.profile:update.me",
           middlewares: [
             (req, res) => {
               res.json({ message: "User profile updated" });
@@ -55,7 +88,7 @@ const routes = new Routes({
       name: "Create a new user",
       description: "Create a new user in the database",
       roles: ["admin"],
-      rai: "user.users:create",
+      rai: "user.profile:update",
       middlewares: [
         (req, res) => {
           res.json({ message: "User created" });
@@ -66,12 +99,11 @@ const routes = new Routes({
   postman: {
     folderName: "User Management",
   },
-});
-// .groupRoutesByRai();
+}).groupRoutesByRai();
 
-// console.log(
-//   "Grouped Routes by RAI:",
-//   new Array(...routes.entries()).flat().filter((item) => {
-//     return typeof item !== "string";
-//   })
-// );
+console.log(
+  "Grouped Routes by RAI:",
+  new Array(...routes.entries()).flat().filter((item) => {
+    return typeof item !== "string";
+  })
+);

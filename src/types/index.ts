@@ -3,6 +3,7 @@ import Route from "../lib/Route";
 import Routes from "../lib/Routes";
 import ErrorRoute from "../lib/CoreError";
 import RoutesParam from "../lib/RoutesParam";
+import PostmanForRoute from "../lib/PostmanForRoute";
 interface Param {
   path: string;
   middleware: RequestParamHandler;
@@ -14,37 +15,13 @@ interface RoutesConfig {
   error?: ErrorRoute;
   params?: RoutesParam[];
   middlewares?: Handler[];
+  mergeParams?: boolean;
   postman?: {
     folderName: string;
   };
   module?: string;
 }
 
-type ContentTypeValues =
-  | "application/json"
-  | "application/xml"
-  | "text/html"
-  | "text/plain"
-  | "application/x-www-form-urlencoded"
-  | "multipart/form-data"
-  | "image/jpeg"
-  | "image/png"
-  | "image/gif"
-  | "application/pdf"
-  | "text/css"
-  | "application/javascript";
-
-type HeaderItem<K extends string = string> = {
-  key: K;
-  value: K extends "Content-Type" ? ContentTypeValues | string : string;
-  description?: string;
-};
-
-interface RouteConfigPostman {
-  headers?: Array<HeaderItem>;
-  body?: Record<string, unknown>;
-  params?: Array<{ key: string; value: string; description: string }>;
-}
 
 interface RouteConfig {
   method: "GET" | "POST" | "PUT" | "DELETE";
@@ -55,7 +32,7 @@ interface RouteConfig {
   description?: string;
   rai: string;
   roles: string[];
-  postman?: RouteConfigPostman;
+  postman?: PostmanForRoute;
 }
 
 interface TheLastMiddlewareConfig {
@@ -66,4 +43,29 @@ interface TheLastMiddlewareConfig {
 
 type RAI = string;
 
-export type { Param, RouteConfig, RoutesConfig, TheLastMiddlewareConfig, RAI };
+/**
+ * Error types
+ */
+type ErrorInfoType = {
+  title: string;
+  details: string;
+  fix: string;
+};
+type PossibleErrosType = Record<string, ErrorInfoType>;
+type ErrorTraceType = {
+  file: string;
+  line: number;
+  column: number;
+  function?: string | null;
+};
+
+export type {
+  Param,
+  RouteConfig,
+  RoutesConfig,
+  TheLastMiddlewareConfig,
+  RAI,
+  PossibleErrosType,
+  ErrorInfoType,
+  ErrorTraceType,
+};

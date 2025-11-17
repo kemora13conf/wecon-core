@@ -1,3 +1,5 @@
+import chalk from "chalk";
+import { ErrorInfoType, ErrorTraceType } from "./../types";
 
 /**
  * Abstract base class that provides common functionality for error tracking and debugging.
@@ -23,12 +25,7 @@ export abstract class BaseClass {
    * @returns {number} returns.column - The column number of instantiation
    * @returns {string | null} returns.function - The function name where instantiation occurred, or null if unknown
    */
-  protected getCallerInfo(): {
-    file: string;
-    line: number;
-    column: number;
-    function: string | null;
-  } {
+  protected getCallerInfo(): ErrorTraceType {
     const err = new Error();
     const stack = err.stack || "";
 
@@ -67,6 +64,37 @@ export abstract class BaseClass {
       column: 0,
       function: null,
     };
+  }
+
+  logError(error: ErrorInfoType, tracedSatckInfo: ErrorTraceType): void {
+    console.error(
+      chalk.red.bold(
+        "\n╔══════════════════════════════════════════════════════════╗"
+      ),
+      chalk.red.bold("\n║") +
+        chalk.white.bold(
+          "  Route Configuration Error                            "
+        ) +
+        chalk.red.bold("   ║"),
+      chalk.red.bold(
+        "\n╚══════════════════════════════════════════════════════════╝\n"
+      )
+    );
+
+    console.error(chalk.red.bold("✖ Error:"), chalk.white(error.title));
+    console.error(chalk.gray("\n  Details:"), chalk.white(error.details));
+    console.error(
+      chalk.gray("\n  Location:"),
+      chalk.cyan(
+        `${tracedSatckInfo.file}:${tracedSatckInfo.line}:${tracedSatckInfo.column}`
+      )
+    );
+    console.error(chalk.yellow.bold("\n  💡 How to fix:"));
+    console.error(chalk.yellow(`  ${error.fix.replace(/\n/g, "\n  ")}`));
+    console.error(""); // Empty line for spacing
+
+    // exit the process with failure
+    process.exit(1);
   }
 }
 

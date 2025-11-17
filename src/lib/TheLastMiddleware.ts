@@ -57,6 +57,7 @@ export function TheLastMiddleware(config: TheLastMiddlewareConfig) {
         "TheLastMiddleware: 'guestRole' must be a string representing the guest role."
       );
   }
+  
   /**
    * Group routes by their RAI for efficient lookup during request handling.
    * This creates a Map where each key is a RAI and the value is the corresponding Route.
