@@ -1,24 +1,26 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Handler, RequestHandler } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { RouteConfig, ErrorTraceType, PossibleErrosType } from "../types";
+import { RouteConfig, ErrorTraceType, PossibleErrosType, RAI } from "../types";
 import Module from "./Module";
 import BaseClass from "./BaseClass";
 import errors from "../errors";
 import PostmanForRoute from "./PostmanForRoute";
+import RoutesParam from "./RoutesParam";
 
 class Route<T = any> extends BaseClass {
-  module?: Module<T>;
   id: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
+  params?: Array<RoutesParam> = [];
   middlewares: Handler[] | RequestHandler[] | any[];
   name: string;
   description: string;
-  rai: string;
+  rai: RAI;
   roles: string[];
+  module?: Module<T>;
   postman?: PostmanForRoute;
-
+  
   /**
    * Will be used to track all the registered RAIs to ensure uniqueness
    * across the entire application.
@@ -28,7 +30,7 @@ class Route<T = any> extends BaseClass {
    * existence of RAIs quickly.
    * and also because when we clear the map we can free up memory used by the registered RAIs.
    */
-  static readonly registeredRAIs = new Map<string, string>();
+  static readonly registeredRAIs = new Map<RAI, RAI>();
 
   constructor(r: RouteConfig) {
     super(); // Call the BaseClass constructor
@@ -131,8 +133,7 @@ class Route<T = any> extends BaseClass {
       },
       "ROUTE_CONFIG:DUPLICATE_RAI": {
         title: "Duplicate 'rai' detected",
-        details:
-          "The 'rai' provided is already registered: " + this.rai,
+        details: "The 'rai' provided is already registered: " + this.rai,
         fix: "Ensure each route has a unique rai:\n    rai: 'users:create' // Different from existing RAIs",
       },
       "ROUTE_CONFIG:MISSING_ROLES": {
@@ -162,6 +163,27 @@ class Route<T = any> extends BaseClass {
     };
 
     super.logError(errorConfig, errInfo);
+  }
+
+  /**
+   * isAuthorized - Check if the provided user roles are authorized to access this route
+   * @param {string[]} userRoles - Array of roles assigned to the user
+   * @returns {boolean} - Returns true if authorized, false otherwise
+   */
+  isAuthorized(userRoles: string[]): boolean {
+    // If the route has no roles defined, it's considered protected
+    if (this.roles.length === 0) {
+      return false;
+    }
+
+    // Check if any of the user's roles match the route's allowed roles
+    for (const role of userRoles) {
+      if (this.roles.includes(role)) {
+        return true; // Authorized
+      }
+    }
+
+    return false; // Not authorized
   }
 }
 

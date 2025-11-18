@@ -3,5 +3,6 @@
  * for easier access throughout the application.
  */
 import ConfigError from "./ConfigError";
+import RequestError from "./RequestError";
 
-export default { ConfigError };
+export default { ConfigError, RequestError };

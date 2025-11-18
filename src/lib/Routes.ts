@@ -2,7 +2,6 @@
 
 import { Handler } from "express";
 import Route from "./Route";
-import ErrorRoute from "./CoreError";
 import { ErrorTraceType, PossibleErrosType, RoutesConfig } from "../types";
 import Module from "./Module";
 import RoutesParam from "./RoutesParam";
@@ -13,7 +12,6 @@ import PostmanForRoutes from "./PostmanForRoutes";
 class Routes<T = any> extends BaseClass {
   module?: Module<T>;
   prefix: string;
-  error?: ErrorRoute;
   routes: Array<Route | Routes>;
   params?: RoutesParam[];
   middlewares?: Handler[];
@@ -280,11 +278,12 @@ class Routes<T = any> extends BaseClass {
       // assign back to allParams
       allParams.length = 0; // clear the array
       allParams.push(...uniqueParams);
-
+      
       /**
        * Clear the uniqueParamsMap to free memory
-       */
-      uniqueParamsMap.clear();
+      */
+     uniqueParamsMap.clear();
+    
 
       // Retrieve the list of middlewares from all Routes instances in the branch
       const allMiddlewares: Handler[] = [];

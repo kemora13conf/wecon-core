@@ -6,31 +6,16 @@
  */
 
 // Core exports
-import AppWrapper from "./lib/TheLastMiddleware";
+import TheLastMiddleware  from "./lib/TheLastMiddleware";
 import Route from "./lib/Route";
 import Routes from "./lib/Routes";
-import ErrorRoute from "./lib/CoreError";
 import Module from "./lib/Module";
-
-// RAI system exports
-import { InitializeCreatingRAIs } from "./lib/rais";
-import { findRequestRai } from "./lib/rais/middlewares/findRequestRai";
-import { isAuthorized } from "./lib/rais/middlewares/isAuthorized";
-import { IRAI, IRole } from "./lib/rais/types";
 
 // Generator exports
 import PostmanGenerator from "./generators/Postman";
 
 // Type exports
-import {
-  RouteConfig,
-  RoutesConfig,
-  Param,
-  AppWrapperConfig,
-  PostmanConfig,
-  IPostmanUrl,
-  ModuleConfig,
-} from "./types";
+import { RouteConfig, RoutesConfig } from "./types";
 
 import {
   PostmanCollection,
@@ -44,27 +29,16 @@ import {
 } from "./types/postman";
 
 // Error exports
-import {
-  ApiRouteNotFoundError,
-  InvalidRouteError,
-  NotFoundRouteError,
-  SocketAuthError,
-  SocketIOError,
-} from "./errors";
+import ConfigError from "./errors/ConfigError";
+import RequestError from "./errors/RequestError";
 
 // Export everything
 export {
   // Core classes
-  AppWrapper,
+  TheLastMiddleware,
   Route,
   Routes,
-  ErrorRoute,
   Module,
-
-  // RAI system
-  InitializeCreatingRAIs,
-  findRequestRai,
-  isAuthorized,
 
   // Generators
   PostmanGenerator,
@@ -72,13 +46,6 @@ export {
   // Types
   RouteConfig,
   RoutesConfig,
-  Param,
-  AppWrapperConfig,
-  PostmanConfig,
-  ModuleConfig,
-  IPostmanUrl,
-  IRAI,
-  IRole,
 
   // Postman types
   PostmanCollection,
@@ -91,12 +58,9 @@ export {
   SaveOptions,
 
   // Errors
-  ApiRouteNotFoundError,
-  InvalidRouteError,
-  NotFoundRouteError,
-  SocketAuthError,
-  SocketIOError,
+  ConfigError,
+  RequestError,
 };
 
 // Default export
-export default AppWrapper;
+export default TheLastMiddleware ;

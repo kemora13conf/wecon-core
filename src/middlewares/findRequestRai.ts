@@ -1,52 +1,37 @@
-import { NextFunction, Request, Response } from "express";
-import { match } from "path-to-regexp";
-import { IRAI } from "../types";
-import { NotFoundRouteError } from "../../../errors";
+import { Request } from "express";
+import Route from "../lib/Route";
+import RaiMatcher, { RaiRoutesList } from "../utils/RaiMatcher";
+
+// Global matcher instance (singleton pattern)
+let raiMatcherInstance: RaiMatcher | null = null;
 
 /**
- * Middleware to find the request RAI (Role Access Interface) based on the request URL and method.
- * It matches the request URL with the defined RAIs in app.locals. If a match is found, it attaches
- * the RAI object to the request object and calls the next middleware. If no match is found, it
- * returns a 404 error.
+ * Initialize the RAI matcher with routes (call this once during app startup)
+ */
+export const initializeRaiMatcher = (raisList: RaiRoutesList): void => {
+  raiMatcherInstance = new RaiMatcher(raisList);
+};
+
+/**
+ * Middleware to find the request RAI based on the request URL and method.
+ * Optimized with caching and efficient route matching.
  *
  * @param {Request} req - The Express request object.
- * @param {Response} res - The Express response object.
- * @param {Function} next - The next middleware function.
+ * @param {Array<Pick<Route, "path" | "method" | "rai">>} RaisList - List of RAIs to match against.
  */
-export const findRequestRai = async (
+export const findRequestRai = (
   req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    // Access the values of roles and rais from app.locals
-    const rais = req.app.locals.rais as IRAI[];
-
-    const route = req.originalUrl.split("?")[0];
-    const method = req.method;
-
-    const rai = rais.find((r) => {
-      // Add a check to ensure r.path is a string
-      if (typeof r.path === "string") {
-        const test = match(r.path);
-        return (
-          (test(route) ||
-            test(
-              route.endsWith("/") ? route.slice(0, -1) : route.concat("/")
-            )) &&
-          r.method?.trim() === method?.trim()
-        );
-      }
-      return false;
-    });
-
-    if (rai) {
-      req.rai = rai;
-      return next();
-    } else {
-      return next(new NotFoundRouteError("RAI not found"));
-    }
-  } catch (error) {
-    return next(error);
+  RaisList: Array<Pick<Route, "path" | "method" | "rai">>
+): string => {
+  // Initialize matcher if not already done
+  if (!raiMatcherInstance) {
+    initializeRaiMatcher(RaisList);
   }
+
+  const route = req.originalUrl.split("?")[0];
+  const method = req.method;
+
+  const rai = raiMatcherInstance!.findRai(route, method);
+
+  return rai;
 };

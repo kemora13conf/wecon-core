@@ -6,8 +6,8 @@ import errors from "../errors";
 
 class RoutesParam extends BaseClass {
   readonly uuidv4: string;
-  readonly path: string;
-  readonly middleware: RequestParamHandler;
+  public path: string;
+  public middleware: RequestParamHandler;
   validate?: {
     pattern?: RegExp;
     minLength?: number;
