@@ -9,24 +9,18 @@
 import TheLastMiddleware  from "./lib/TheLastMiddleware";
 import Route from "./lib/Route";
 import Routes from "./lib/Routes";
-import Module from "./lib/Module";
+import PostmanForRoute from "./lib/PostmanForRoute";
+import PostmanForRoutes from "./lib/PostmanForRoutes";
 
 // Generator exports
-import PostmanGenerator from "./generators/Postman";
+// import PostmanGenerator from "./generators/Postman";
 
 // Type exports
 import { RouteConfig, RoutesConfig } from "./types";
 
-import {
-  PostmanCollection,
-  PostmanEnvironment,
-  PostmanInfo,
-  PostmanRouteItem,
-  PostmanUrl,
-  PostmanRequest,
-  PostmanVariable,
-  SaveOptions,
-} from "./types/postman";
+
+// Export all Postman schema types
+export * from "./types/postman.types";
 
 // Error exports
 import ConfigError from "./errors/ConfigError";
@@ -38,24 +32,15 @@ export {
   TheLastMiddleware,
   Route,
   Routes,
-  Module,
+  PostmanForRoute,
+  PostmanForRoutes,
 
   // Generators
-  PostmanGenerator,
+  // PostmanGenerator,
 
   // Types
   RouteConfig,
   RoutesConfig,
-
-  // Postman types
-  PostmanCollection,
-  PostmanEnvironment,
-  PostmanInfo,
-  PostmanRouteItem,
-  PostmanUrl,
-  PostmanRequest,
-  PostmanVariable,
-  SaveOptions,
 
   // Errors
   ConfigError,

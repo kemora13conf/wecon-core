@@ -3,14 +3,12 @@
 import { Handler } from "express";
 import Route from "./Route";
 import { ErrorTraceType, PossibleErrosType, RoutesConfig } from "../types";
-import Module from "./Module";
 import RoutesParam from "./RoutesParam";
 import BaseClass from "./BaseClass";
 import errors from "../errors";
 import PostmanForRoutes from "./PostmanForRoutes";
 
-class Routes<T = any> extends BaseClass {
-  module?: Module<T>;
+class Routes extends BaseClass {
   prefix: string;
   routes: Array<Route | Routes>;
   params?: RoutesParam[];
@@ -25,7 +23,9 @@ class Routes<T = any> extends BaseClass {
     this.routes = r.routes;
     this.params = r.params ? r.params : [];
     this.middlewares = r.middlewares ? r.middlewares : [];
-    this.postman = r.postman ? r.postman : { folderName: "" };
+    this.postman = r.postman
+      ? r.postman
+      : new PostmanForRoutes({ folderName: "" });
     this.mergeParams = r.mergeParams ? r.mergeParams : false;
 
     try {

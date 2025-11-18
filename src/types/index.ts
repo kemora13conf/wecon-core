@@ -3,6 +3,7 @@ import Route from "../lib/Route";
 import Routes from "../lib/Routes";
 import RoutesParam from "../lib/RoutesParam";
 import PostmanForRoute from "../lib/PostmanForRoute";
+import PostmanForRoutes from "../lib/PostmanForRoutes";
 
 interface RoutesConfig {
   prefix?: string;
@@ -10,9 +11,7 @@ interface RoutesConfig {
   params?: RoutesParam[];
   middlewares?: Handler[];
   mergeParams?: boolean;
-  postman?: {
-    folderName: string;
-  };
+  postman?: PostmanForRoutes;
   module?: string;
 }
 
@@ -62,3 +61,22 @@ export type {
   ErrorInfoType,
   ErrorTraceType,
 };
+
+// Re-export Postman types for convenience
+export type {
+  PostmanDescription,
+  PostmanVersion,
+  PostmanInfo,
+  PostmanAuthAttribute,
+  PostmanAuthType,
+  PostmanAuth,
+  PostmanVariableType,
+  PostmanVariable,
+  PostmanVariableList,
+  PostmanScript,
+  PostmanEvent,
+  PostmanEventList,
+  PostmanProtocolProfileBehavior,
+  PostmanForRoutesConfig,
+  PostmanCollectionConfig,
+} from "./postman.types";

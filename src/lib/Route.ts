@@ -2,13 +2,12 @@
 import { Handler, RequestHandler } from "express";
 import { v4 as uuidv4 } from "uuid";
 import { RouteConfig, ErrorTraceType, PossibleErrosType, RAI } from "../types";
-import Module from "./Module";
 import BaseClass from "./BaseClass";
 import errors from "../errors";
 import PostmanForRoute from "./PostmanForRoute";
 import RoutesParam from "./RoutesParam";
 
-class Route<T = any> extends BaseClass {
+class Route extends BaseClass {
   id: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
@@ -18,7 +17,6 @@ class Route<T = any> extends BaseClass {
   description: string;
   rai: RAI;
   roles: string[];
-  module?: Module<T>;
   postman?: PostmanForRoute;
   
   /**

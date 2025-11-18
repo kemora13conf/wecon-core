@@ -1,96 +1,49 @@
-import { Express, Handler, RequestHandler, RequestParamHandler } from "express";
-import Route from "../core/Route";
-import Routes from "../core/Routes";
-import ErrorRoute from "../core/ErrorRoute";
-interface Param {
-  path: string;
-  method: RequestParamHandler;
-}
+import { Handler, RequestHandler } from "express";
+import Route from "../lib/Route";
+import Routes from "../lib/Routes";
+import RoutesParam from "../lib/RoutesParam";
+import PostmanForRoute from "../lib/PostmanForRoute";
+import PostmanForRoutes from "../lib/PostmanForRoutes";
 interface RoutesConfig {
-  prefix?: string;
-  routes: Array<Route | Routes>;
-  error?: ErrorRoute;
-  params?: Param[];
-  middlewares?: Handler[];
-  postman?: {
-    folderName: string;
-  };
-  module?: string;
-}
-type ContentTypeValues =
-  | "application/json"
-  | "application/xml"
-  | "text/html"
-  | "text/plain"
-  | "application/x-www-form-urlencoded"
-  | "multipart/form-data"
-  | "image/jpeg"
-  | "image/png"
-  | "image/gif"
-  | "application/pdf"
-  | "text/css"
-  | "application/javascript";
-type HeaderItem<K extends string = string> = {
-  key: K;
-  value: K extends "Content-Type" ? ContentTypeValues | string : string;
-  description?: string;
-};
-interface RouteConfigPostman {
-  headers?: Array<HeaderItem>;
-  body?: Record<string, unknown>;
-  params?: Array<{
-    key: string;
-    value: string;
-    description: string;
-  }>;
+    prefix?: string;
+    routes: Array<Route | Routes>;
+    params?: RoutesParam[];
+    middlewares?: Handler[];
+    mergeParams?: boolean;
+    postman?: PostmanForRoutes;
+    module?: string;
 }
 interface RouteConfig {
-  method: "GET" | "POST" | "PUT" | "DELETE";
-  path: string;
-  middlewares: Handler[] | RequestHandler[] | any[];
-  name?: string;
-  description?: string;
-  rai: string;
-  roles: string[];
-  postman?: RouteConfigPostman;
-}
-interface IPostmanUrl {
-  raw: string;
-  protocol?: string;
-  host: string[];
-  path: string[];
-  query?: Array<{
-    key: string;
-    value: string;
+    method: "GET" | "POST" | "PUT" | "DELETE";
+    path: string;
+    middlewares: Handler[] | RequestHandler[] | any[];
+    name?: string;
     description?: string;
-  }>;
+    rai: RAI;
+    roles: string[];
+    postman?: PostmanForRoute;
 }
-interface AppWrapperConfig {
-  app: Express;
-  routes: Routes;
-  postman?: PostmanConfig;
-  roles?: string[];
+interface TheLastMiddlewareConfig {
+    rootRoutes: Routes;
+    roles: Array<string>;
+    guestRole: string;
+    onRoutesPrepared?: (routes: Array<Route>) => Promise<void> | void;
 }
-interface PostmanConfig {
-  name: string;
-  description?: string;
-  version?: string;
-  baseUrl?: string;
-}
-interface ModuleConfig {
-  name: string;
-  routes: Routes;
-  bootstrap?: () => Promise<void> | void;
-  i18n?: {
-    [key: string]: Record<string, unknown>;
-  };
-}
-export type {
-  IPostmanUrl,
-  RouteConfig,
-  RoutesConfig,
-  Param,
-  AppWrapperConfig,
-  PostmanConfig,
-  ModuleConfig,
+type RAI = string;
+/**
+ * Error types
+ */
+type ErrorInfoType = {
+    title: string;
+    details: string;
+    fix: string;
 };
+type PossibleErrosType = Record<string, ErrorInfoType>;
+type ErrorTraceType = {
+    file: string;
+    line: number;
+    column: number;
+    function?: string | null;
+};
+export type { RouteConfig, RoutesConfig, TheLastMiddlewareConfig, RAI, PossibleErrosType, ErrorInfoType, ErrorTraceType, };
+export type { PostmanDescription, PostmanVersion, PostmanInfo, PostmanAuthAttribute, PostmanAuthType, PostmanAuth, PostmanVariableType, PostmanVariable, PostmanVariableList, PostmanScript, PostmanEvent, PostmanEventList, PostmanProtocolProfileBehavior, PostmanForRoutesConfig, PostmanCollectionConfig, } from "./postman.types";

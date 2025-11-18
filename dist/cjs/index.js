@@ -5,38 +5,42 @@
  * A TypeScript framework for building Express.js APIs with built-in
  * role-based access control and Postman documentation generation.
  */
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __exportStar = (this && this.__exportStar) || function(m, exports) {
+    for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SocketIOError = exports.SocketAuthError = exports.NotFoundRouteError = exports.InvalidRouteError = exports.ApiRouteNotFoundError = exports.PostmanGenerator = exports.isAuthorized = exports.findRequestRai = exports.InitializeCreatingRAIs = exports.Module = exports.ErrorRoute = exports.Routes = exports.Route = exports.AppWrapper = void 0;
+exports.RequestError = exports.ConfigError = exports.PostmanForRoutes = exports.PostmanForRoute = exports.Routes = exports.Route = exports.TheLastMiddleware = void 0;
 // Core exports
-const AppWrapper_1 = __importDefault(require("./core/AppWrapper"));
-exports.AppWrapper = AppWrapper_1.default;
-const Route_1 = __importDefault(require("./core/Route"));
+const TheLastMiddleware_1 = __importDefault(require("./lib/TheLastMiddleware"));
+exports.TheLastMiddleware = TheLastMiddleware_1.default;
+const Route_1 = __importDefault(require("./lib/Route"));
 exports.Route = Route_1.default;
-const Routes_1 = __importDefault(require("./core/Routes"));
+const Routes_1 = __importDefault(require("./lib/Routes"));
 exports.Routes = Routes_1.default;
-const ErrorRoute_1 = __importDefault(require("./core/ErrorRoute"));
-exports.ErrorRoute = ErrorRoute_1.default;
-const Module_1 = __importDefault(require("./core/Module"));
-exports.Module = Module_1.default;
-// RAI system exports
-const rais_1 = require("./lib/rais");
-Object.defineProperty(exports, "InitializeCreatingRAIs", { enumerable: true, get: function () { return rais_1.InitializeCreatingRAIs; } });
-const findRequestRai_1 = require("./lib/rais/middlewares/findRequestRai");
-Object.defineProperty(exports, "findRequestRai", { enumerable: true, get: function () { return findRequestRai_1.findRequestRai; } });
-const isAuthorized_1 = require("./lib/rais/middlewares/isAuthorized");
-Object.defineProperty(exports, "isAuthorized", { enumerable: true, get: function () { return isAuthorized_1.isAuthorized; } });
-// Generator exports
-const Postman_1 = __importDefault(require("./generators/Postman"));
-exports.PostmanGenerator = Postman_1.default;
+const PostmanForRoute_1 = __importDefault(require("./lib/PostmanForRoute"));
+exports.PostmanForRoute = PostmanForRoute_1.default;
+const PostmanForRoutes_1 = __importDefault(require("./lib/PostmanForRoutes"));
+exports.PostmanForRoutes = PostmanForRoutes_1.default;
+// Export all Postman schema types
+__exportStar(require("./types/postman.types"), exports);
 // Error exports
-const errors_1 = require("./errors");
-Object.defineProperty(exports, "ApiRouteNotFoundError", { enumerable: true, get: function () { return errors_1.ApiRouteNotFoundError; } });
-Object.defineProperty(exports, "InvalidRouteError", { enumerable: true, get: function () { return errors_1.InvalidRouteError; } });
-Object.defineProperty(exports, "NotFoundRouteError", { enumerable: true, get: function () { return errors_1.NotFoundRouteError; } });
-Object.defineProperty(exports, "SocketAuthError", { enumerable: true, get: function () { return errors_1.SocketAuthError; } });
-Object.defineProperty(exports, "SocketIOError", { enumerable: true, get: function () { return errors_1.SocketIOError; } });
+const ConfigError_1 = __importDefault(require("./errors/ConfigError"));
+exports.ConfigError = ConfigError_1.default;
+const RequestError_1 = __importDefault(require("./errors/RequestError"));
+exports.RequestError = RequestError_1.default;
 // Default export
-exports.default = AppWrapper_1.default;
+exports.default = TheLastMiddleware_1.default;
