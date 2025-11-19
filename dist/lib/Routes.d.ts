@@ -18,6 +18,7 @@ declare class Routes extends BaseClass {
         params: RoutesParam[];
         middlewares: Handler[];
     }>;
+    private deduplicateParams;
     test(): void;
 }
 export default Routes;

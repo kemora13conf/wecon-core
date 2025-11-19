@@ -4,6 +4,8 @@ import Routes from "./lib/Routes";
 import RoutesParam from "./lib/RoutesParam";
 import Wecon from "./lib/Wecon";
 import RequestError from "./errors/RequestError";
+import PostmanForRoute from "./lib/PostmanForRoute";
+import PostmanForRoutes from "./lib/PostmanForRoutes";
 
 declare global {
   namespace Express {
@@ -108,11 +110,77 @@ const routes = new Routes({
           res.json({ message: "User created" });
         },
       ],
+      postman: new PostmanForRoute({
+        name: "Create User",
+        description: "Create a new user with email, name, and role",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer {{authToken}}",
+        },
+        body: {
+          mode: "raw",
+          raw: JSON.stringify(
+            {
+              email: "john.doe@example.com",
+              name: "John Doe",
+              role: "user",
+            },
+            null,
+            2
+          ),
+          options: {
+            raw: {
+              language: "json",
+            },
+          },
+        },
+        response: [
+          {
+            name: "Success - User Created",
+            code: 201,
+            status: "Created",
+            _postman_previewlanguage: "json",
+            header: [{ key: "Content-Type", value: "application/json" }],
+            body: JSON.stringify(
+              {
+                success: true,
+                data: {
+                  id: "user_123",
+                  email: "john.doe@example.com",
+                  name: "John Doe",
+                  role: "user",
+                  createdAt: "2025-11-19T10:30:00Z",
+                },
+              },
+              null,
+              2
+            ),
+          },
+        ],
+        event: [
+          {
+            listen: "test",
+            script: {
+              type: "text/javascript",
+              exec: [
+                "pm.test('Status code is 201', function () {",
+                "    pm.response.to.have.status(201);",
+                "});",
+                "",
+                "pm.test('Response has user data', function () {",
+                "    const jsonData = pm.response.json();",
+                "    pm.expect(jsonData.success).to.be.true;",
+                "    pm.expect(jsonData.data).to.have.property('id');",
+                "    pm.expect(jsonData.data).to.have.property('email');",
+                "});",
+              ],
+            },
+          },
+        ],
+      }),
     }),
   ],
-  postman: {
-    folderName: "User Management",
-  },
+  postman: new PostmanForRoutes({ folderName: "User Management" }),
 });
 
 const app = express();
@@ -163,6 +231,5 @@ app.use((err: RequestError, req: express.Request, res: express.Response) => {
   res.json({ error: err.message, meta: err.meta || null });
 });
 
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
-});
+export default app;
+export { app };

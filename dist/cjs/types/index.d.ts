@@ -23,12 +23,6 @@ interface RouteConfig {
     roles: string[];
     postman?: PostmanForRoute;
 }
-interface TheLastMiddlewareConfig {
-    rootRoutes: Routes;
-    roles: Array<string>;
-    guestRole: string;
-    onRoutesPrepared?: (routes: Array<Route>) => Promise<void> | void;
-}
 type RAI = string;
 /**
  * Error types
@@ -45,5 +39,6 @@ type ErrorTraceType = {
     column: number;
     function?: string | null;
 };
-export type { RouteConfig, RoutesConfig, TheLastMiddlewareConfig, RAI, PossibleErrosType, ErrorInfoType, ErrorTraceType, };
+export type { RouteConfig, RoutesConfig, RAI, PossibleErrosType, ErrorInfoType, ErrorTraceType, };
 export type { PostmanDescription, PostmanVersion, PostmanInfo, PostmanAuthAttribute, PostmanAuthType, PostmanAuth, PostmanVariableType, PostmanVariable, PostmanVariableList, PostmanScript, PostmanEvent, PostmanEventList, PostmanProtocolProfileBehavior, PostmanForRoutesConfig, PostmanCollectionConfig, } from "./postman.types";
+export type { PostmanForRouteConfig } from "../lib/PostmanForRoute";

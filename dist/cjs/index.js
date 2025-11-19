@@ -23,10 +23,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestError = exports.ConfigError = exports.PostmanForRoutes = exports.PostmanForRoute = exports.Routes = exports.Route = exports.TheLastMiddleware = void 0;
+exports.RequestError = exports.ConfigError = exports.PostmanGenerator = exports.PostmanForRoutes = exports.PostmanForRoute = exports.Routes = exports.Route = exports.TheLastMiddleware = void 0;
 // Core exports
-const TheLastMiddleware_1 = __importDefault(require("./lib/TheLastMiddleware"));
-exports.TheLastMiddleware = TheLastMiddleware_1.default;
+const Wecon_1 = __importDefault(require("./lib/Wecon"));
+exports.TheLastMiddleware = Wecon_1.default;
 const Route_1 = __importDefault(require("./lib/Route"));
 exports.Route = Route_1.default;
 const Routes_1 = __importDefault(require("./lib/Routes"));
@@ -35,6 +35,9 @@ const PostmanForRoute_1 = __importDefault(require("./lib/PostmanForRoute"));
 exports.PostmanForRoute = PostmanForRoute_1.default;
 const PostmanForRoutes_1 = __importDefault(require("./lib/PostmanForRoutes"));
 exports.PostmanForRoutes = PostmanForRoutes_1.default;
+// Generator exports
+const PostmanGenerator_1 = __importDefault(require("./generators/PostmanGenerator"));
+exports.PostmanGenerator = PostmanGenerator_1.default;
 // Export all Postman schema types
 __exportStar(require("./types/postman.types"), exports);
 // Error exports
@@ -43,4 +46,4 @@ exports.ConfigError = ConfigError_1.default;
 const RequestError_1 = __importDefault(require("./errors/RequestError"));
 exports.RequestError = RequestError_1.default;
 // Default export
-exports.default = TheLastMiddleware_1.default;
+exports.default = Wecon_1.default;

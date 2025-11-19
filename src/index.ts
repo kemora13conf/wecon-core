@@ -13,13 +13,14 @@ import PostmanForRoute from "./lib/PostmanForRoute";
 import PostmanForRoutes from "./lib/PostmanForRoutes";
 
 // Generator exports
-// import PostmanGenerator from "./generators/Postman";
+import PostmanGenerator from "./generators/PostmanGenerator";
 
 // Type exports
-import { RouteConfig, RoutesConfig } from "./types";
+import { RouteConfig, RoutesConfig, PostmanForRouteConfig } from "./types";
 
 // Export all Postman schema types
 export * from "./types/postman.types";
+export type { PostmanForRouteConfig };
 
 // Error exports
 import ConfigError from "./errors/ConfigError";
@@ -35,7 +36,7 @@ export {
   PostmanForRoutes,
 
   // Generators
-  // PostmanGenerator,
+  PostmanGenerator,
 
   // Types
   RouteConfig,

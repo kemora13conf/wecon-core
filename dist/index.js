@@ -5,11 +5,13 @@
  * role-based access control and Postman documentation generation.
  */
 // Core exports
-import TheLastMiddleware from "./lib/TheLastMiddleware";
+import TheLastMiddleware from "./lib/Wecon";
 import Route from "./lib/Route";
 import Routes from "./lib/Routes";
 import PostmanForRoute from "./lib/PostmanForRoute";
 import PostmanForRoutes from "./lib/PostmanForRoutes";
+// Generator exports
+import PostmanGenerator from "./generators/PostmanGenerator";
 // Export all Postman schema types
 export * from "./types/postman.types";
 // Error exports
@@ -19,6 +21,8 @@ import RequestError from "./errors/RequestError";
 export { 
 // Core classes
 TheLastMiddleware, Route, Routes, PostmanForRoute, PostmanForRoutes, 
+// Generators
+PostmanGenerator, 
 // Errors
 ConfigError, RequestError, };
 // Default export

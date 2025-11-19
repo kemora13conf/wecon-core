@@ -27,13 +27,6 @@ interface RouteConfig {
   postman?: PostmanForRoute;
 }
 
-interface TheLastMiddlewareConfig {
-  rootRoutes: Routes;
-  roles: Array<string>;
-  guestRole: string;
-  onRoutesPrepared?: (routes: Array<Route>) => Promise<void> | void;
-}
-
 type RAI = string;
 
 /**
@@ -55,7 +48,6 @@ type ErrorTraceType = {
 export type {
   RouteConfig,
   RoutesConfig,
-  TheLastMiddlewareConfig,
   RAI,
   PossibleErrosType,
   ErrorInfoType,
@@ -80,3 +72,5 @@ export type {
   PostmanForRoutesConfig,
   PostmanCollectionConfig,
 } from "./postman.types";
+
+export type { PostmanForRouteConfig } from "../lib/PostmanForRoute";

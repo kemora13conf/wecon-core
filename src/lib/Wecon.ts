@@ -45,6 +45,7 @@ import Routes from "./Routes";
 import Route from "./Route";
 import errors from "../errors";
 import RaiMatcher from "../utils/RaiMatcher";
+import PostmanGenerator from "../generators/PostmanGenerator";
 
 /**
  * Postman configuration interface
@@ -468,9 +469,33 @@ class Wecon {
       );
     }
 
-    // TODO: Implement Postman generation
-    // This will be implemented when we refactor the PostmanGenerator
-    console.warn("Postman generation not yet implemented in Wecon");
+    if (!this._routes) {
+      throw new Error(
+        "Routes not configured. Cannot generate Postman collection."
+      );
+    }
+
+    try {
+      const { collection, environment } = await PostmanGenerator.generateFromWecon(
+        {
+          name: this._postman.name,
+          description: this._postman.description,
+          baseUrl: this._postman.baseUrl,
+          version: this._postman.version,
+          output: this._postman.output,
+        },
+        this._routes
+      );
+
+      if (this._dev?.logRoutes) {
+        console.log(`✓ Generated Postman collection: ${this._postman.name}`);
+        console.log(`  - ${collection.item.length} top-level items`);
+        console.log(`  - ${environment.values.length} environment variables`);
+      }
+    } catch (error) {
+      console.error("Failed to generate Postman collection:", error);
+      throw error;
+    }
   }
 
   /**
