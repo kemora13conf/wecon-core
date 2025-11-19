@@ -6,7 +6,7 @@
  */
 
 // Core exports
-import TheLastMiddleware  from "./lib/TheLastMiddleware";
+import TheLastMiddleware from "./lib/Wecon";
 import Route from "./lib/Route";
 import Routes from "./lib/Routes";
 import PostmanForRoute from "./lib/PostmanForRoute";
@@ -17,7 +17,6 @@ import PostmanForRoutes from "./lib/PostmanForRoutes";
 
 // Type exports
 import { RouteConfig, RoutesConfig } from "./types";
-
 
 // Export all Postman schema types
 export * from "./types/postman.types";
@@ -48,4 +47,4 @@ export {
 };
 
 // Default export
-export default TheLastMiddleware ;
+export default TheLastMiddleware;

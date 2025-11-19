@@ -1,17 +1,15 @@
-import { IRAI, IRole } from "../lib/rais/types/index.ts";
+import { RAI } from ".";
 
 declare global {
   namespace Express {
     interface Locals {
-      roles?: IRole[];
-      rais?: IRAI[];
     }
 
 
     // Extend the Request interface
     interface Request {
-      rai?: IRAI;
-      rais?: IRAI[];
+      rai?: RAI;
+      rais?: RAI[];
       user?: {
         roles: string[];
       };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { Handler } from "express";
 import Route from "./Route";
@@ -128,198 +127,105 @@ class Routes extends BaseClass {
     super.logError(errorConfig, errInfo);
   }
 
-  public groupRoutesByRai() {
+  public groupRoutesByRai(): Map<
+    string,
+    Route & { params: RoutesParam[]; middlewares: Handler[] }
+  > {
     const raiMap = new Map<
       string,
-      Route & {
-        params: RoutesParam[];
-        middlewares: Handler[];
-      }
+      Route & { params: RoutesParam[]; middlewares: Handler[] }
     >();
-    /**
-     * This will at first build a tree like this one
-     * [
-     *   [Routes, Routes, Route],
-     *   [Routes, Route],
-     *   [Route],
-     *   [Routes, Routes, Route],
-     * ]
-     *
-     * And each item of this is an endpoint route
-     */
-    const rootTree: Array<Array<Routes | Route>> = this.routes.map((r) => {
-      return [this, r];
-    });
 
-    /**
-     * Now we will do a while loop to go through the tree
-     * and when ever we find a Routes instance we will expand it
-     * to get all the way to the Route instances
-     */
-    let isDone = false;
-    while (!isDone) {
-      isDone = true;
-      for (let i = 0; i < rootTree.length; i++) {
-        const branch = rootTree[i];
-        const lastItem = branch[branch.length - 1];
-        if (lastItem instanceof Routes) {
-          isDone = false;
+    const traverse = (
+      current: Routes | Route,
+      accumulatedPath: string,
+      accumulatedParams: RoutesParam[],
+      accumulatedMiddlewares: Handler[],
+      parentsMergeParams: boolean
+    ) => {
+      // --- HANDLE ROUTE (Endpoint) ---
+      if (current instanceof Route) {
+        const fullPath = accumulatedPath + current.path;
 
-          // Expand the routes
-          lastItem.routes.forEach((r) => {
-            /**
-             * This will add all the routes of the last Routes instance
-             * to the branch and because js is pass by reference we are modifying
-             * the rootTree array directly
-             */
-            rootTree.push([...branch, r]);
+        // Combine accumulated middlewares with route-specific ones
+        const finalMiddlewares = [
+          ...accumulatedMiddlewares,
+          ...(current.middlewares || []),
+        ];
+
+        // Combine accumulated params
+        const finalParams = this.deduplicateParams(accumulatedParams);
+
+        if (raiMap.has(current.rai)) {
+          throw new errors.ConfigError(`DUPLICATE_RAI:${current.rai}`, {
+            route: current,
           });
-          // Remove the current branch
-          rootTree.splice(i, 1);
-          i--;
-        } else {
-          // It's a Route instance, do nothing
         }
-      }
-    }
 
-    // Now we have all the endpoint routes in the rootTree
-    rootTree.forEach((branch) => {
-      const route = branch[branch.length - 1] as Route;
-      const routeIndex = branch.length - 1; // this will be needed to determine whether to merge params or not
-      const rai = route.rai;
-
-      // get full path
-      const fullPath = branch
-        .map((item) => {
-          if (item instanceof Routes) {
-            return item.prefix;
-          } else if (item instanceof Route) {
-            return item.path;
-          } else {
-            return "";
-          }
-        })
-        .filter((p) => p !== undefined && p !== null && p !== "")
-        .join("");
-
-      /**
-       * Retrieve the list of params from all Routes instances in the branch.
-       *
-       * In order to this we need to make sure that we only pass params from:
-       *    1. Routes to Route - always
-       *    2. Routes to Routes - only if mergeParams is true
-       *
-       * But how can we determine that?
-       * For the first case we can always check if the item index === routeIndex - 1 then it's a Routes to Route case
-       * For the second case we can check if the item index < routeIndex - 1 and if mergeParams is true
-       */
-      const allParams: RoutesParam[] = [];
-      /**
-       * 1. Routes to Route - always
-       * This is the easy part we just need to check if the item index === routeIndex - 1
-       * and because always the branch array ends with a Route instance we can just check the last two items
-       */
-      if (branch.length === 2) {
-        branch.forEach((item) => {
-          if (item instanceof Routes && item.params) {
-            const itemIndex = branch.indexOf(item);
-
-            if (itemIndex === routeIndex - 1) {
-              allParams.push(...item.params);
-              return;
-            }
-          }
-        });
-      } else {
-        /**
-         * 2. Routes to Routes - only if mergeParams is true
-         * This requires some extra processing because to pass params from the Top Routes down passing by all Routes in between
-         * until we reach the Route instance we need to make sure that all the Routes in between have mergeParams set to true
-         *
-         * How we gonna acheive that?
-         * we create a new array of all the Routes in between and check their mergeParams property and reverse is
-         * so the first Routes is the las
-         */
-        const routesInBetween = branch
-          .slice(0, -1) // remove the last Route instance
-          .filter((item) => item instanceof Routes)
-          .reverse() as Routes[];
-        for (let i = 0; i < routesInBetween.length; i++) {
-          const currentRoutes: Routes = routesInBetween[i];
-          if (i === 0) {
-            // always add the first Routes params
-            if (currentRoutes.params) {
-              allParams.push(...currentRoutes.params);
-            }
-          } else {
-            // check mergeParams property
-            if (currentRoutes.mergeParams) {
-              if (currentRoutes.params) {
-                allParams.push(...currentRoutes.params);
-              }
-            } else {
-              // stop the loop
-              break;
-            }
-          }
-        }
-      }
-
-      /**
-       * Extra validation on params make sure that they are unique and
-       * keep only the last one in case of duplicates
-       */
-      const uniqueParamsMap = new Map<string, RoutesParam>();
-      allParams.forEach((param) => {
-        uniqueParamsMap.set(param.path, param);
-      });
-      const uniqueParams = Array.from(uniqueParamsMap.values());
-      // assign back to allParams
-      allParams.length = 0; // clear the array
-      allParams.push(...uniqueParams);
-      
-      /**
-       * Clear the uniqueParamsMap to free memory
-      */
-     uniqueParamsMap.clear();
-    
-
-      // Retrieve the list of middlewares from all Routes instances in the branch
-      const allMiddlewares: Handler[] = [];
-      branch.forEach((item) => {
-        if (item instanceof Routes && item.middlewares) {
-          allMiddlewares.push(...item.middlewares);
-        } else if (item instanceof Route && item.middlewares) {
-          allMiddlewares.push(...item.middlewares);
-        } else {
-          // do nothing
-        }
-      });
-
-      if (raiMap.has(rai)) {
-        /**
-         * Remove this route and throw an error
-         * because RAI must be unique
-         */
-        throw new errors.ConfigError(`DUPLICATE_RAI:${rai}`, {
-          route,
-        });
-      } else {
+        // Create the flattened route object
         const extendedRoute = Object.assign(
-          Object.create(Object.getPrototypeOf(route)),
-          route,
+          Object.create(Object.getPrototypeOf(current)),
+          current,
           {
-            path: fullPath,
-            params: allParams,
-            middlewares: allMiddlewares,
+            path: fullPath, // The absolute path (e.g. /api/v1/users/:id)
+            params: finalParams,
+            middlewares: finalMiddlewares,
           }
         );
-        raiMap.set(rai, extendedRoute);
+
+        raiMap.set(current.rai, extendedRoute);
+        return;
       }
-    });
+
+      // --- HANDLE ROUTES (Group) ---
+      if (current instanceof Routes) {
+        const nextPath = accumulatedPath + current.prefix;
+
+        // Middleware Inheritance
+        const nextMiddlewares = [
+          ...accumulatedMiddlewares,
+          ...(current.middlewares || []),
+        ];
+
+        // Param Inheritance Logic
+        let nextParams: RoutesParam[] = [];
+
+        if (parentsMergeParams) {
+          // If merging, take all previous params + current params
+          nextParams = [...accumulatedParams, ...(current.params || [])];
+        } else {
+          // If NOT merging, strictly take ONLY current params (reset scope)
+          // Unless it's the very first level, but typically mergeParams=false means "block parent params"
+          // However, usually, we keep accumulatedParams if we want path context,
+          // but your logic seemed to want strictly scoped params.
+          // Standard Express behavior: Params are positional.
+          // To match your previous logic:
+          nextParams = current.params || [];
+        }
+
+        // Recurse into children
+        current.routes.forEach((child) => {
+          traverse(
+            child,
+            nextPath,
+            nextParams,
+            nextMiddlewares,
+            current.mergeParams || false
+          );
+        });
+      }
+    };
+
+    // Start traversal
+    traverse(this, "", [], [], false);
 
     return raiMap;
+  }
+
+  private deduplicateParams(params: RoutesParam[]): RoutesParam[] {
+    const unique = new Map<string, RoutesParam>();
+    params.forEach((p) => unique.set(p.path, p));
+    return Array.from(unique.values());
   }
 
   public test() {
