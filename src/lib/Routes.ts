@@ -157,9 +157,13 @@ class Routes extends BaseClass {
         const finalParams = this.deduplicateParams(accumulatedParams);
 
         if (raiMap.has(current.rai)) {
-          throw new errors.ConfigError(`DUPLICATE_RAI:${current.rai}`, {
-            route: current,
-          });
+          const errorConfig = {
+            title: "Duplicate 'rai' detected",
+            details: "The 'rai' provided is already registered: " + current.rai,
+            fix: "Ensure each route has a unique rai:\n    rai: 'users:create' // Different from existing RAIs",
+          };
+          // Use the debug info captured at instantiation time to point to the user's code
+          current.logError(errorConfig, current.debugInfo);
         }
 
         // Create the flattened route object

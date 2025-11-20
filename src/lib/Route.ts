@@ -18,17 +18,7 @@ class Route extends BaseClass {
   rai: RAI;
   roles: string[];
   postman?: PostmanRoute;
-  
-  /**
-   * Will be used to track all the registered RAIs to ensure uniqueness
-   * across the entire application.
-   *
-   * we choosed a Map because it provides efficient O(1) time complexity for
-   * lookups, insertions, and deletions, making it ideal for checking the
-   * existence of RAIs quickly.
-   * and also because when we clear the map we can free up memory used by the registered RAIs.
-   */
-  static readonly registeredRAIs = new Map<RAI, RAI>();
+  public debugInfo: ErrorTraceType;
 
   constructor(r: RouteConfig) {
     super(); // Call the BaseClass constructor
@@ -42,49 +32,43 @@ class Route extends BaseClass {
     this.rai = r.rai;
     this.roles = r.roles;
     this.postman = r.postman;
+    this.debugInfo = this.getCallerInfo();
 
     try {
       this.validateRoute();
-
-      // here we can register the RAI to ensure uniqueness
-      Route.registeredRAIs.set(this.rai, this.rai);
     } catch (err) {
-      const errInfo = this.getCallerInfo();
-      this.handleConfigError(err as Error, errInfo);
+      this.handleConfigError(err as Error, this.debugInfo);
     }
   }
 
   private validateRoute(): void {
     /**
-     * 1. Validate the method property
-     */
+      * 1. Validate the method property
+      */
     if (!this.method) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_METHOD");
     }
 
     /**
-     * 2. Validate the path property
-     */
+      * 2. Validate the path property
+      */
     if (!this.path) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_PATH");
     }
 
     /**
-     * 3. Validate the rai property
-     */
+      * 3. Validate the rai property
+      */
     if (!this.rai) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_RAI");
     }
     if (typeof this.rai !== "string") {
       throw new errors.ConfigError("ROUTE_CONFIG:INVALID_RAI_TYPE");
     }
-    if (Route.registeredRAIs.has(this.rai)) {
-      throw new errors.ConfigError(`ROUTE_CONFIG:DUPLICATE_RAI`);
-    }
 
     /**
-     * 4. Validate the roles property
-     */
+      * 4. Validate the roles property
+      */
     if (!this.roles) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_ROLES");
     }

@@ -75,7 +75,7 @@ const routes = new Routes({
           name: "View user profile",
           description: "View the profile of the logged-in user",
           roles: ["admin", "user", "guest"],
-          rai: "user.profile:view.me",
+          rai: "user.users:list",
           middlewares: [
             (req, res) => {
               res.json({ message: "User profile data" });
@@ -258,5 +258,9 @@ app.use((err: RequestError, req: express.Request, res: express.Response) => {
   res.json({ error: err.message, meta: err.meta || null });
 });
 
-export default app;
-export { app };
+app.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000");
+});
+
+// export default app;
+// export { app };
