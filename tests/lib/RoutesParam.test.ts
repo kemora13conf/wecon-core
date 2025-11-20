@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
 import RoutesParam from '../../src/lib/RoutesParam.js';
 import type { RequestParamHandler } from 'express';
@@ -16,7 +18,7 @@ describe('RoutesParam', () => {
 
   describe('Constructor - Basic Properties', () => {
     it('should create an instance of RoutesParam', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => {
+      const middleware: RequestParamHandler = (req, res, next, _id) => {
         next();
       };
       const param = new RoutesParam('userId', middleware);
@@ -24,26 +26,26 @@ describe('RoutesParam', () => {
     });
 
     it('should set path correctly', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param = new RoutesParam('userId', middleware);
       expect(param.path).toBe('userId');
     });
 
     it('should set middleware correctly', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param = new RoutesParam('userId', middleware);
       expect(param.middleware).toBe(middleware);
     });
 
     it('should generate unique UUID for each instance', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param1 = new RoutesParam('userId', middleware);
       const param2 = new RoutesParam('userId', middleware);
       expect(param1.uuidv4).not.toBe(param2.uuidv4);
     });
 
     it('should initialize validate as undefined when not provided', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param = new RoutesParam('userId', middleware);
       expect(param.validate).toBeUndefined();
     });
@@ -51,7 +53,7 @@ describe('RoutesParam', () => {
 
   describe('Validation Configuration', () => {
     it('should accept pattern validation', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const validate = {
         pattern: /^[0-9]+$/,
       };
@@ -60,7 +62,7 @@ describe('RoutesParam', () => {
     });
 
     it('should accept minLength validation', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const validate = {
         minLength: 3,
       };
@@ -69,7 +71,7 @@ describe('RoutesParam', () => {
     });
 
     it('should accept maxLength validation', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const validate = {
         maxLength: 50,
       };
@@ -78,7 +80,7 @@ describe('RoutesParam', () => {
     });
 
     it('should accept custom validator function', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const validatorFn = (value: string) => value.startsWith('user-');
       const validate = {
         validatorFn,
@@ -88,7 +90,7 @@ describe('RoutesParam', () => {
     });
 
     it('should accept multiple validation rules', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const validate = {
         pattern: /^[a-zA-Z0-9]+$/,
         minLength: 5,
@@ -106,7 +108,7 @@ describe('RoutesParam', () => {
   describe('validateValue Method', () => {
     describe('Pattern Validation', () => {
       it('should return true for matching pattern', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('userId', middleware, {
           pattern: /^[0-9]+$/,
         });
@@ -114,7 +116,7 @@ describe('RoutesParam', () => {
       });
 
       it('should return false for non-matching pattern', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('userId', middleware, {
           pattern: /^[0-9]+$/,
         });
@@ -122,7 +124,7 @@ describe('RoutesParam', () => {
       });
 
       it('should handle complex regex patterns', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('email', middleware, {
           pattern: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
         });
@@ -133,7 +135,7 @@ describe('RoutesParam', () => {
 
     describe('Length Validation', () => {
       it('should return true for value meeting minLength', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           minLength: 3,
         });
@@ -142,7 +144,7 @@ describe('RoutesParam', () => {
       });
 
       it('should return false for value below minLength', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           minLength: 3,
         });
@@ -150,7 +152,7 @@ describe('RoutesParam', () => {
       });
 
       it('should return true for value meeting maxLength', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           maxLength: 10,
         });
@@ -159,7 +161,7 @@ describe('RoutesParam', () => {
       });
 
       it('should return false for value exceeding maxLength', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           maxLength: 10,
         });
@@ -167,7 +169,7 @@ describe('RoutesParam', () => {
       });
 
       it('should validate within range (minLength and maxLength)', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           minLength: 3,
           maxLength: 10,
@@ -182,7 +184,7 @@ describe('RoutesParam', () => {
 
     describe('Custom Validator Function', () => {
       it('should return true when validator function returns true', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('userId', middleware, {
           validatorFn: (value) => value.startsWith('user-'),
         });
@@ -190,7 +192,7 @@ describe('RoutesParam', () => {
       });
 
       it('should return false when validator function returns false', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('userId', middleware, {
           validatorFn: (value) => value.startsWith('user-'),
         });
@@ -198,7 +200,7 @@ describe('RoutesParam', () => {
       });
 
       it('should handle complex validation logic', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('productId', middleware, {
           validatorFn: (value) => {
             const parts = value.split('-');
@@ -213,7 +215,7 @@ describe('RoutesParam', () => {
 
     describe('Combined Validation Rules', () => {
       it('should validate against all rules (all passing)', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           pattern: /^[a-zA-Z0-9]+$/,
           minLength: 5,
@@ -224,7 +226,7 @@ describe('RoutesParam', () => {
       });
 
       it('should fail if pattern fails', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           pattern: /^[a-zA-Z0-9]+$/,
           minLength: 5,
@@ -234,7 +236,7 @@ describe('RoutesParam', () => {
       });
 
       it('should fail if minLength fails', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           pattern: /^[a-zA-Z0-9]+$/,
           minLength: 5,
@@ -244,7 +246,7 @@ describe('RoutesParam', () => {
       });
 
       it('should fail if maxLength fails', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           pattern: /^[a-zA-Z0-9]+$/,
           minLength: 5,
@@ -254,7 +256,7 @@ describe('RoutesParam', () => {
       });
 
       it('should fail if validatorFn fails', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('username', middleware, {
           pattern: /^[a-zA-Z0-9]+$/,
           minLength: 5,
@@ -267,7 +269,7 @@ describe('RoutesParam', () => {
 
     describe('No Validation', () => {
       it('should return true when no validation rules are set', () => {
-        const middleware: RequestParamHandler = (req, res, next, id) => next();
+        const middleware: RequestParamHandler = (req, res, next, _id) => next();
         const param = new RoutesParam('anyParam', middleware);
         expect(param.validateValue('anything')).toBe(true);
         expect(param.validateValue('')).toBe(true);
@@ -281,14 +283,14 @@ describe('RoutesParam', () => {
       // Note: Empty path actually triggers process.exit in BaseClass
       // This test verifies that validation would catch it, but we skip
       // the actual instantiation to avoid process.exit
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       // Cannot test this directly as it calls process.exit(1)
       // In production, this would prevent invalid configuration
       expect(true).toBe(true); // Placeholder
     });
 
     it('should handle empty string value in validation', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param = new RoutesParam('param', middleware, {
         minLength: 1,
       });
@@ -296,7 +298,7 @@ describe('RoutesParam', () => {
     });
 
     it('should handle very long values', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param = new RoutesParam('param', middleware, {
         maxLength: 5000,
       });
@@ -306,7 +308,7 @@ describe('RoutesParam', () => {
     });
 
     it('should handle special characters in values', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param = new RoutesParam('param', middleware, {
         pattern: /^[a-zA-Z0-9!@#$%^&*()]+$/,
       });
@@ -314,7 +316,7 @@ describe('RoutesParam', () => {
     });
 
     it('should handle unicode characters', () => {
-      const middleware: RequestParamHandler = (req, res, next, id) => next();
+      const middleware: RequestParamHandler = (req, res, next, _id) => next();
       const param = new RoutesParam('name', middleware, {
         minLength: 2,
         maxLength: 20,
@@ -326,8 +328,9 @@ describe('RoutesParam', () => {
 
   describe('Middleware Property', () => {
     it('should store and retrieve middleware function', () => {
+       
       let middlewareCalled = false;
-      const middleware: RequestParamHandler = (req, res, next, id) => {
+      const middleware: RequestParamHandler = (req, res, next, _id) => {
         middlewareCalled = true;
         next();
       };

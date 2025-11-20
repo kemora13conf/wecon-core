@@ -6,8 +6,8 @@
  * scripts, and other properties based on the Postman Collection v2.1.0 schema.
  */
 
-import { Routes, Route, PostmanForRoutes } from "@wecon/core";
-import type { PostmanForRoutesConfig } from "@wecon/core";
+import { Routes, PostmanGroup } from "@wecon/core";
+import type { PostmanGroupConfig } from "@wecon/core";
 
 // ============================================================================
 // Example 1: Basic Folder Configuration
@@ -18,7 +18,7 @@ const basicRoutes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "User Management",
     description: "All endpoints related to user management",
   }),
@@ -33,7 +33,7 @@ const authenticatedRoutes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "Admin Panel",
     description: {
       content: "Protected admin endpoints requiring authentication",
@@ -61,7 +61,7 @@ const apiKeyRoutes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "Public API",
     description: "Public endpoints requiring API key",
     auth: {
@@ -96,7 +96,7 @@ const routesWithVariables = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "API v1",
     description: "Version 1 of the API with environment variables",
     variable: [
@@ -131,7 +131,7 @@ const routesWithScripts = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "Orders",
     description: "Order management endpoints with automated testing",
     event: [
@@ -183,7 +183,7 @@ const oauth2Routes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "OAuth Protected",
     description: "Endpoints protected with OAuth 2.0",
     auth: {
@@ -218,7 +218,7 @@ const basicAuthRoutes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "Legacy API",
     description: "Legacy endpoints using Basic Auth",
     auth: {
@@ -248,7 +248,7 @@ const customBehaviorRoutes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "File Operations",
     description: "File upload and download endpoints",
     protocolProfileBehavior: {
@@ -266,13 +266,13 @@ const customBehaviorRoutes = new Routes({
 // Example 9: Comprehensive Configuration
 // ============================================================================
 
-const comprehensiveConfig: PostmanForRoutesConfig = {
+const comprehensiveConfig: PostmanGroupConfig = {
   folderName: "Complete Example",
   description: {
     content: `
 # Complete Postman Folder Configuration
 
-This folder demonstrates all available configuration options for PostmanForRoutes.
+This folder demonstrates all available configuration options for PostmanGroup.
 
 ## Features
 - Bearer token authentication
@@ -347,7 +347,7 @@ const comprehensiveRoutes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes(comprehensiveConfig),
+  postman: new PostmanGroup(comprehensiveConfig),
 });
 
 // ============================================================================
@@ -359,7 +359,7 @@ const noAuthRoutes = new Routes({
   routes: [
     /* routes here */
   ],
-  postman: new PostmanForRoutes({
+  postman: new PostmanGroup({
     folderName: "Health Checks",
     description: "Public health check endpoints with no authentication required",
     auth: null, // Explicitly disable authentication for this folder

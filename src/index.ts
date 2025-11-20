@@ -6,7 +6,7 @@
  */
 
 // Core exports
-import TheLastMiddleware from "./lib/Wecon";
+import Wecon from "./lib/Wecon";
 import Route from "./lib/Route";
 import Routes from "./lib/Routes";
 import PostmanRoute from "./lib/PostmanRoute";
@@ -29,7 +29,7 @@ import RequestError from "./errors/RequestError";
 // Export everything
 export {
   // Core classes
-  TheLastMiddleware,
+  Wecon,
   Route,
   Routes,
   PostmanRoute,
@@ -48,4 +48,4 @@ export {
 };
 
 // Default export
-export default TheLastMiddleware;
+export default Wecon;
