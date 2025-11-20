@@ -5,7 +5,7 @@ import { ErrorTraceType, PossibleErrosType, RoutesConfig } from "../types";
 import RoutesParam from "./RoutesParam";
 import BaseClass from "./BaseClass";
 import errors from "../errors";
-import PostmanForRoutes from "./PostmanForRoutes";
+import PostmanGroup from "./PostmanGroup";
 
 class Routes extends BaseClass {
   prefix: string;
@@ -13,7 +13,7 @@ class Routes extends BaseClass {
   params?: RoutesParam[];
   middlewares?: Handler[];
   mergeParams?: boolean = false;
-  postman?: PostmanForRoutes;
+  postman?: PostmanGroup;
 
   constructor(r: RoutesConfig) {
     super(); // Call the BaseClass constructor
@@ -24,7 +24,7 @@ class Routes extends BaseClass {
     this.middlewares = r.middlewares ? r.middlewares : [];
     this.postman = r.postman
       ? r.postman
-      : new PostmanForRoutes({ folderName: "" });
+      : new PostmanGroup({ folderName: "" });
     this.mergeParams = r.mergeParams ? r.mergeParams : false;
 
     try {

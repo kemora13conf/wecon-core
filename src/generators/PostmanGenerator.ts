@@ -7,7 +7,7 @@
  *
  * Features:
  * - Automatic variable extraction from route paths (e.g., :userId -> {{userId}})
- * - Collection of custom variables from PostmanForRoute and PostmanForRoutes configs
+ * - Collection of custom variables from PostmanRoute and PostmanGroup configs
  * - Hierarchical folder structure matching Routes organization
  * - Smart defaults for missing configurations
  */
@@ -25,6 +25,8 @@ import {
   PostmanEventList,
   PostmanProtocolProfileBehavior,
 } from "../types/postman.types";
+import { PostmanItem } from "../lib/PostmanRoute";
+import { PostmanItemGroup } from "../lib/PostmanGroup";
 
 // so we can easily change schema version in the future
 const SCHEMA_URL =
@@ -61,77 +63,6 @@ interface PostmanCollection {
   event?: PostmanEventList;
   variable?: PostmanVariableList;
   protocolProfileBehavior?: PostmanProtocolProfileBehavior;
-}
-
-/**
- * Postman Item (single request)
- */
-interface PostmanItem {
-  name: string;
-  id?: string;
-  description?: string | { content?: string; type?: string };
-  request: PostmanRequest | string;
-  response?: unknown[];
-  event?: PostmanEventList;
-  variable?: PostmanVariableList;
-  protocolProfileBehavior?: PostmanProtocolProfileBehavior;
-}
-
-/**
- * Postman Item Group (folder)
- */
-interface PostmanItemGroup {
-  name: string;
-  description?: string | { content?: string; type?: string };
-  item: (PostmanItem | PostmanItemGroup)[];
-  auth?: PostmanAuth | null;
-  event?: PostmanEventList;
-  variable?: PostmanVariableList;
-  protocolProfileBehavior?: PostmanProtocolProfileBehavior;
-}
-
-/**
- * Postman Request structure
- */
-interface PostmanRequest {
-  method: string;
-  header?: Array<{ key: string; value: string; disabled?: boolean }>;
-  body?: {
-    mode: string;
-    raw?: string;
-    urlencoded?: Array<{ key: string; value: string; disabled?: boolean }>;
-    formdata?: Array<{
-      key: string;
-      value: string;
-      type?: string;
-      disabled?: boolean;
-    }>;
-    file?: { src: string };
-    graphql?: { query: string; variables?: string };
-    options?: { raw?: { language?: string } };
-  };
-  url: PostmanUrl | string;
-  auth?: PostmanAuth | null;
-  description?: string | { content?: string; type?: string };
-}
-
-/**
- * Postman URL structure
- */
-interface PostmanUrl {
-  raw: string;
-  protocol?: string;
-  host?: string | string[];
-  port?: string;
-  path?: string | string[];
-  query?: Array<{
-    key: string;
-    value: string;
-    disabled?: boolean;
-    description?: string | { content?: string; type?: string };
-  }>;
-  hash?: string;
-  variable?: PostmanVariableList;
 }
 
 /**
@@ -224,83 +155,74 @@ class PostmanGenerator {
       const pathParams = this.extractPathParams(routes.path);
       pathParams.forEach((param) => this.pathVariables.add(param));
 
-      // Extract variables from PostmanForRoute config
+      // Extract variables from PostmanRoute config
       if (routes.postman) {
-        if (routes.postman.variable) {
-          routes.postman.variable.forEach((variable) => {
-            const key = variable.key || variable.id;
-            if (key && !this.collectedVariables.has(key)) {
-              this.collectedVariables.set(key, variable);
-            }
-          });
-        }
-
-        // Extract variables from query params
-        if (routes.postman.query) {
-          Object.keys(routes.postman.query).forEach((key) => {
-            if (!this.collectedVariables.has(key)) {
-              this.collectedVariables.set(key, {
-                key,
-                value: routes.postman!.query![key],
-                type: "string",
-              });
-            }
-          });
-        }
-
-        // Extract variables from headers (like {{authToken}})
-        if (routes.postman.headers) {
-          Object.values(routes.postman.headers).forEach((headerValue) => {
-            const variables = this.extractVariablesFromString(headerValue);
-            variables.forEach((varName) => {
-              if (!this.collectedVariables.has(varName)) {
-                this.collectedVariables.set(varName, {
-                  key: varName,
-                  value: "",
-                  type: "string",
-                  description: `Extracted from headers`,
-                });
-              }
-            });
-          });
-        }
-
-        // Extract variables from body
-        if (routes.postman.body?.raw) {
-          const variables = this.extractVariablesFromString(
-            routes.postman.body.raw
-          );
-          variables.forEach((varName) => {
-            if (!this.collectedVariables.has(varName)) {
-              this.collectedVariables.set(varName, {
-                key: varName,
-                value: "",
-                type: "string",
-                description: `Extracted from request body`,
-              });
-            }
-          });
-        }
+        // Deep scan the entire PostmanRoute configuration object
+        this.recursivelyScanForVariables(routes.postman);
       }
     } else if (routes instanceof Routes) {
       const currentPath = parentPath + routes.prefix;
 
-      // Extract variables from PostmanForRoutes config
+      // Extract variables from PostmanGroup config
       if (routes.postman) {
-        if (routes.postman.variable) {
-          routes.postman.variable.forEach((variable) => {
-            const key = variable.key || variable.id;
-            if (key && !this.collectedVariables.has(key)) {
-              this.collectedVariables.set(key, variable);
-            }
-          });
-        }
+        // Deep scan the entire PostmanGroup configuration object
+        this.recursivelyScanForVariables(routes.postman);
       }
 
       // Recursively process child routes
       routes.routes.forEach((childRoute) => {
         this.extractVariablesFromRoutes(childRoute, currentPath);
       });
+    }
+  }
+
+  /**
+   * Recursively scan an object for string values containing {{variable}}
+   */
+  private recursivelyScanForVariables(obj: unknown): void {
+    if (!obj) return;
+
+    if (typeof obj === "string") {
+      const variables = this.extractVariablesFromString(obj);
+      variables.forEach((varName) => {
+        if (!this.collectedVariables.has(varName)) {
+          this.collectedVariables.set(varName, {
+            key: varName,
+            value: "",
+            type: "string",
+            description: "Extracted from configuration",
+          });
+        }
+      });
+      return;
+    }
+
+    if (Array.isArray(obj)) {
+      obj.forEach((item) => this.recursivelyScanForVariables(item));
+      return;
+    }
+
+    if (typeof obj === "object") {
+      // Special handling for PostmanVariable objects to preserve their metadata
+      // Check if it looks like a PostmanVariable (has key/id and value)
+      const potentialVar = obj as PostmanVariable;
+      if (
+        (potentialVar.key || potentialVar.id) &&
+        potentialVar.value !== undefined
+      ) {
+        const key = potentialVar.key || potentialVar.id;
+        if (key && !this.collectedVariables.has(key)) {
+          this.collectedVariables.set(key, potentialVar);
+        }
+        // Continue scanning value just in case it has nested vars (unlikely but possible)
+        this.recursivelyScanForVariables(potentialVar.value);
+        return;
+      }
+
+      // Standard object traversal
+      Object.values(obj).forEach((value) =>
+        this.recursivelyScanForVariables(value)
+      );
     }
   }
 
@@ -367,59 +289,31 @@ class PostmanGenerator {
       // Check if this Routes instance should be a folder
       const shouldBeFolder = routes.postman?.folderName || routes.prefix;
 
+      // Process child routes first
+      const childItems: (PostmanItem | PostmanItemGroup)[] = [];
+      routes.routes.forEach((childRoute) => {
+        const children = this.convertRoutesToItems(
+          childRoute,
+          parentPrefix + routes.prefix
+        );
+        childItems.push(...children);
+      });
+
       if (shouldBeFolder) {
-        // Create a folder (item group)
-        const folder: PostmanItemGroup = {
-          name: routes.postman?.folderName || routes.prefix || "Routes",
-          item: [],
-        };
-
-        // Add description if provided
-        if (routes.postman?.description) {
-          folder.description = routes.postman.description;
+        // Use PostmanGroup to generate the folder
+        if (routes.postman) {
+          const folder = routes.postman.toPostmanItemGroup(childItems);
+          items.push(folder);
+        } else {
+          // Fallback if no PostmanGroup config but has prefix (shouldn't happen with default init)
+          items.push({
+            name: routes.prefix || "Routes",
+            item: childItems,
+          });
         }
-
-        // Add auth if provided
-        if (routes.postman?.auth !== undefined) {
-          folder.auth = routes.postman.auth;
-        }
-
-        // Add events if provided
-        if (routes.postman?.event) {
-          folder.event = routes.postman.event;
-        }
-
-        // Add variables if provided
-        if (routes.postman?.variable) {
-          folder.variable = routes.postman.variable;
-        }
-
-        // Add protocol profile behavior if provided
-        if (routes.postman?.protocolProfileBehavior) {
-          folder.protocolProfileBehavior =
-            routes.postman.protocolProfileBehavior;
-        }
-        console.log(" prefix ===> ", parentPrefix + routes.prefix);
-
-        // Convert child routes
-        routes.routes.forEach((childRoute) => {
-          const childItems = this.convertRoutesToItems(
-            childRoute,
-            parentPrefix + routes.prefix
-          );
-          folder.item.push(...childItems);
-        });
-
-        items.push(folder);
       } else {
         // No folder, just flatten the children
-        routes.routes.forEach((childRoute) => {
-          const childItems = this.convertRoutesToItems(
-            childRoute,
-            parentPrefix + routes.prefix
-          );
-          items.push(...childItems);
-        });
+        items.push(...childItems);
       }
     }
 
@@ -432,36 +326,12 @@ class PostmanGenerator {
   private convertRouteToItem(route: Route): PostmanItem {
     const baseUrl = this.config.baseUrl || "{{baseUrl}}";
 
-    // Use PostmanForRoute's toPostmanItem if configured
+    // Use PostmanRoute's toPostmanItem if configured
     if (route.postman) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const generatedItem = route.postman.toPostmanItem(route, baseUrl) as any;
-      // Convert the item to match our internal structure, normalizing types
-      const item: PostmanItem = {
-        name: generatedItem.name,
-        request: generatedItem.request,
-      };
-
-      // Normalize description (PostmanDescription can be null, but we want undefined)
-      if (
-        generatedItem.description !== null &&
-        generatedItem.description !== undefined
-      ) {
-        item.description = generatedItem.description;
-      }
-
-      // Add optional properties if they exist
-      if (generatedItem.event) item.event = generatedItem.event;
-      if (generatedItem.variable) item.variable = generatedItem.variable;
-      if (generatedItem.response) item.response = generatedItem.response;
-      if (generatedItem.protocolProfileBehavior) {
-        item.protocolProfileBehavior = generatedItem.protocolProfileBehavior;
-      }
-
-      return item;
+      return route.postman.toPostmanItem(route, baseUrl);
     }
 
-    // Otherwise, generate a basic item
+    // Otherwise, generate a basic item (Fallback)
     const postmanPath = this.convertPathToPostman(route.path);
 
     const item: PostmanItem = {

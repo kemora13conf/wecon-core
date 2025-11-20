@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { RouteConfig, ErrorTraceType, PossibleErrosType, RAI } from "../types";
 import BaseClass from "./BaseClass";
 import errors from "../errors";
-import PostmanForRoute from "./PostmanForRoute";
+import PostmanRoute from "./PostmanRoute";
 import RoutesParam from "./RoutesParam";
 
 class Route extends BaseClass {
@@ -17,7 +17,7 @@ class Route extends BaseClass {
   description: string;
   rai: RAI;
   roles: string[];
-  postman?: PostmanForRoute;
+  postman?: PostmanRoute;
   
   /**
    * Will be used to track all the registered RAIs to ensure uniqueness

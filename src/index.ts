@@ -9,18 +9,18 @@
 import TheLastMiddleware from "./lib/Wecon";
 import Route from "./lib/Route";
 import Routes from "./lib/Routes";
-import PostmanForRoute from "./lib/PostmanForRoute";
-import PostmanForRoutes from "./lib/PostmanForRoutes";
+import PostmanRoute from "./lib/PostmanRoute";
+import PostmanGroup from "./lib/PostmanGroup";
 
 // Generator exports
 import PostmanGenerator from "./generators/PostmanGenerator";
 
 // Type exports
-import { RouteConfig, RoutesConfig, PostmanForRouteConfig } from "./types";
+import { RouteConfig, RoutesConfig, PostmanRouteConfig, PostmanGroupConfig } from "./types";
 
 // Export all Postman schema types
 export * from "./types/postman.types";
-export type { PostmanForRouteConfig };
+export type { PostmanRouteConfig, PostmanGroupConfig };
 
 // Error exports
 import ConfigError from "./errors/ConfigError";
@@ -32,8 +32,8 @@ export {
   TheLastMiddleware,
   Route,
   Routes,
-  PostmanForRoute,
-  PostmanForRoutes,
+  PostmanRoute,
+  PostmanGroup,
 
   // Generators
   PostmanGenerator,

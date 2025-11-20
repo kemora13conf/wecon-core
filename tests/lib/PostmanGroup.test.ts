@@ -1,21 +1,21 @@
 import { describe, it, expect } from '@jest/globals';
-import PostmanForRoutes from '../../src/lib/PostmanForRoutes.js';
+import PostmanGroup from '../../src/lib/PostmanGroup.js';
 
-describe('PostmanForRoutes', () => {
+describe('PostmanGroup', () => {
   describe('Constructor - Basic Properties', () => {
-    it('should create an instance of PostmanForRoutes', () => {
-      const postman = new PostmanForRoutes({ folderName: 'Test Folder' });
-      expect(postman).toBeInstanceOf(PostmanForRoutes);
+    it('should create an instance of PostmanGroup', () => {
+      const postman = new PostmanGroup({ folderName: 'Test Folder' });
+      expect(postman).toBeInstanceOf(PostmanGroup);
     });
 
     it('should set folderName correctly', () => {
       const folderName = 'User Management';
-      const postman = new PostmanForRoutes({ folderName });
+      const postman = new PostmanGroup({ folderName });
       expect(postman.folderName).toBe(folderName);
     });
 
     it('should initialize optional properties as undefined when not provided', () => {
-      const postman = new PostmanForRoutes({ folderName: 'Test' });
+      const postman = new PostmanGroup({ folderName: 'Test' });
       expect(postman.description).toBeUndefined();
       expect(postman.auth).toBeUndefined();
       expect(postman.variable).toBeUndefined();
@@ -27,7 +27,7 @@ describe('PostmanForRoutes', () => {
   describe('Description Property', () => {
     it('should handle string description', () => {
       const description = 'This is a test folder';
-      const postman = new PostmanForRoutes({ folderName: 'Test', description });
+      const postman = new PostmanGroup({ folderName: 'Test', description });
       expect(postman.description).toBe(description);
     });
 
@@ -36,12 +36,12 @@ describe('PostmanForRoutes', () => {
         content: '# Test Folder\n\nThis is **markdown** content',
         type: 'text/markdown',
       };
-      const postman = new PostmanForRoutes({ folderName: 'Test', description });
+      const postman = new PostmanGroup({ folderName: 'Test', description });
       expect(postman.description).toEqual(description);
     });
 
     it('should handle null description', () => {
-      const postman = new PostmanForRoutes({ folderName: 'Test', description: null });
+      const postman = new PostmanGroup({ folderName: 'Test', description: null });
       expect(postman.description).toBeNull();
     });
   });
@@ -52,7 +52,7 @@ describe('PostmanForRoutes', () => {
         type: 'bearer' as const,
         bearer: [{ key: 'token', value: '{{authToken}}', type: 'string' }],
       };
-      const postman = new PostmanForRoutes({ folderName: 'Test', auth });
+      const postman = new PostmanGroup({ folderName: 'Test', auth });
       expect(postman.auth).toEqual(auth);
       expect(postman.auth?.type).toBe('bearer');
     });
@@ -65,7 +65,7 @@ describe('PostmanForRoutes', () => {
           { key: 'value', value: '{{apiKey}}', type: 'string' },
         ],
       };
-      const postman = new PostmanForRoutes({ folderName: 'Test', auth });
+      const postman = new PostmanGroup({ folderName: 'Test', auth });
       expect(postman.auth?.type).toBe('apikey');
     });
 
@@ -77,12 +77,12 @@ describe('PostmanForRoutes', () => {
           { key: 'password', value: '{{password}}', type: 'string' },
         ],
       };
-      const postman = new PostmanForRoutes({ folderName: 'Test', auth });
+      const postman = new PostmanGroup({ folderName: 'Test', auth });
       expect(postman.auth?.type).toBe('basic');
     });
 
     it('should handle null auth (no authentication)', () => {
-      const postman = new PostmanForRoutes({ folderName: 'Test', auth: null });
+      const postman = new PostmanGroup({ folderName: 'Test', auth: null });
       expect(postman.auth).toBeNull();
     });
   });
@@ -92,7 +92,7 @@ describe('PostmanForRoutes', () => {
       const variable = [
         { key: 'baseUrl', value: 'https://api.example.com', type: 'string' as const },
       ];
-      const postman = new PostmanForRoutes({ folderName: 'Test', variable });
+      const postman = new PostmanGroup({ folderName: 'Test', variable });
       expect(postman.variable).toHaveLength(1);
       expect(postman.variable?.[0].key).toBe('baseUrl');
     });
@@ -103,7 +103,7 @@ describe('PostmanForRoutes', () => {
         { key: 'timeout', value: 5000, type: 'number' as const },
         { key: 'enableCache', value: true, type: 'boolean' as const },
       ];
-      const postman = new PostmanForRoutes({ folderName: 'Test', variable });
+      const postman = new PostmanGroup({ folderName: 'Test', variable });
       expect(postman.variable).toHaveLength(3);
       expect(postman.variable?.[1].type).toBe('number');
     });
@@ -117,12 +117,12 @@ describe('PostmanForRoutes', () => {
           description: 'The user ID for testing',
         },
       ];
-      const postman = new PostmanForRoutes({ folderName: 'Test', variable });
+      const postman = new PostmanGroup({ folderName: 'Test', variable });
       expect(postman.variable?.[0].description).toBe('The user ID for testing');
     });
 
     it('should handle empty variable array', () => {
-      const postman = new PostmanForRoutes({ folderName: 'Test', variable: [] });
+      const postman = new PostmanGroup({ folderName: 'Test', variable: [] });
       expect(postman.variable).toHaveLength(0);
     });
   });
@@ -137,7 +137,7 @@ describe('PostmanForRoutes', () => {
           },
         },
       ];
-      const postman = new PostmanForRoutes({ folderName: 'Test', event });
+      const postman = new PostmanGroup({ folderName: 'Test', event });
       expect(postman.event).toHaveLength(1);
       expect(postman.event?.[0].listen).toBe('prerequest');
     });
@@ -151,7 +151,7 @@ describe('PostmanForRoutes', () => {
           },
         },
       ];
-      const postman = new PostmanForRoutes({ folderName: 'Test', event });
+      const postman = new PostmanGroup({ folderName: 'Test', event });
       expect(postman.event?.[0].listen).toBe('test');
     });
 
@@ -166,7 +166,7 @@ describe('PostmanForRoutes', () => {
           script: { exec: ['pm.test("test", () => {});'] },
         },
       ];
-      const postman = new PostmanForRoutes({ folderName: 'Test', event });
+      const postman = new PostmanGroup({ folderName: 'Test', event });
       expect(postman.event).toHaveLength(2);
     });
 
@@ -178,7 +178,7 @@ describe('PostmanForRoutes', () => {
           disabled: true,
         },
       ];
-      const postman = new PostmanForRoutes({ folderName: 'Test', event });
+      const postman = new PostmanGroup({ folderName: 'Test', event });
       expect(postman.event?.[0].disabled).toBe(true);
     });
   });
@@ -190,7 +190,7 @@ describe('PostmanForRoutes', () => {
         followRedirects: true,
         maxRedirects: 10,
       };
-      const postman = new PostmanForRoutes({ folderName: 'Test', protocolProfileBehavior });
+      const postman = new PostmanGroup({ folderName: 'Test', protocolProfileBehavior });
       expect(postman.protocolProfileBehavior).toEqual(protocolProfileBehavior);
     });
 
@@ -204,7 +204,7 @@ describe('PostmanForRoutes', () => {
         maxRedirects: 5,
         strictSSL: true,
       };
-      const postman = new PostmanForRoutes({ folderName: 'Test', protocolProfileBehavior });
+      const postman = new PostmanGroup({ folderName: 'Test', protocolProfileBehavior });
       expect(postman.protocolProfileBehavior?.strictSSL).toBe(true);
       expect(postman.protocolProfileBehavior?.maxRedirects).toBe(5);
     });
@@ -235,7 +235,7 @@ describe('PostmanForRoutes', () => {
           followRedirects: true,
         },
       };
-      const postman = new PostmanForRoutes(config);
+      const postman = new PostmanGroup(config);
       expect(postman.folderName).toBe('Complete Example');
       expect(postman.description).toEqual(config.description);
       expect(postman.auth).toEqual(config.auth);
@@ -247,26 +247,26 @@ describe('PostmanForRoutes', () => {
 
   describe('Edge Cases', () => {
     it('should handle empty folderName', () => {
-      const postman = new PostmanForRoutes({ folderName: '' });
+      const postman = new PostmanGroup({ folderName: '' });
       expect(postman.folderName).toBe('');
     });
 
     it('should handle very long folderName', () => {
       const longName = 'Folder '.repeat(100);
-      const postman = new PostmanForRoutes({ folderName: longName });
+      const postman = new PostmanGroup({ folderName: longName });
       expect(postman.folderName.length).toBeGreaterThan(500);
     });
 
     it('should handle special characters in folderName', () => {
       const folderName = 'API / Routes & Endpoints';
-      const postman = new PostmanForRoutes({ folderName });
+      const postman = new PostmanGroup({ folderName });
       expect(postman.folderName).toBe(folderName);
     });
   });
 
   describe('Property Modification', () => {
     it('should allow modifying properties after creation', () => {
-      const postman = new PostmanForRoutes({ folderName: 'Initial' });
+      const postman = new PostmanGroup({ folderName: 'Initial' });
       postman.folderName = 'Modified';
       postman.description = 'New description';
       expect(postman.folderName).toBe('Modified');

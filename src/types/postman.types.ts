@@ -182,7 +182,7 @@ export interface PostmanProtocolProfileBehavior {
  * Configuration for a Postman folder (item-group) at the Routes level
  * This represents the folder/collection-level properties that can be configured
  */
-export interface PostmanForRoutesConfig {
+export interface PostmanGroupConfig {
   /** Folder name - user-friendly identifier for the folder */
   folderName: string;
 
@@ -203,6 +203,62 @@ export interface PostmanForRoutesConfig {
 }
 
 /**
+ * Configuration for PostmanRoute
+ * Represents a single request item in a Postman collection
+ */
+export interface PostmanRouteConfig {
+  /** Item name - overrides the auto-generated name from Route */
+  name?: string;
+
+  /** Item description */
+  description?: PostmanDescription;
+
+  /** Authentication configuration for this request (overrides parent auth) */
+  auth?: PostmanAuth | null;
+
+  /** Variables scoped to this request */
+  variable?: PostmanVariableList;
+
+  /** Pre-request and test scripts for this request */
+  event?: PostmanEventList;
+
+  /** Protocol profile behavior configuration */
+  protocolProfileBehavior?: PostmanProtocolProfileBehavior;
+
+  /** Request headers as key-value pairs */
+  headers?: Record<string, string>;
+
+  /** Query parameters as key-value pairs */
+  query?: Record<string, string>;
+
+  /** Request body configuration */
+  body?: {
+    mode: "raw" | "urlencoded" | "formdata" | "file" | "graphql";
+    raw?: string;
+    urlencoded?: Array<{ key: string; value: string; disabled?: boolean }>;
+    formdata?: Array<{ key: string; value: string; type?: "text" | "file"; disabled?: boolean }>;
+    file?: { src: string };
+    graphql?: { query: string; variables?: string };
+    options?: {
+      raw?: {
+        language?: "json" | "javascript" | "html" | "xml" | "text";
+      };
+    };
+  };
+
+  /** Sample responses for this request */
+  response?: Array<{
+    name: string;
+    originalRequest?: unknown;
+    status?: string;
+    code?: number;
+    header?: Array<{ key: string; value: string }>;
+    body?: string;
+    _postman_previewlanguage?: string;
+  }>;
+}
+
+/**
  * Re-export for backwards compatibility and convenience
  */
-export type PostmanCollectionConfig = PostmanForRoutesConfig;
+export type PostmanCollectionConfig = PostmanGroupConfig;

@@ -4,8 +4,8 @@ import Routes from "./lib/Routes";
 import RoutesParam from "./lib/RoutesParam";
 import Wecon from "./lib/Wecon";
 import RequestError from "./errors/RequestError";
-import PostmanForRoute from "./lib/PostmanForRoute";
-import PostmanForRoutes from "./lib/PostmanForRoutes";
+import PostmanRoute from "./lib/PostmanRoute";
+import PostmanGroup from "./lib/PostmanGroup";
 
 declare global {
   namespace Express {
@@ -96,7 +96,7 @@ const routes = new Routes({
           ],
         }),
       ],
-      postman: new PostmanForRoutes({
+      postman: new PostmanGroup({
         folderName: "Profile",
         auth: {
           type: "bearer",
@@ -137,7 +137,7 @@ const routes = new Routes({
           res.json({ message: "User created" });
         },
       ],
-      postman: new PostmanForRoute({
+      postman: new PostmanRoute({
         name: "Create User",
         description: "Create a new user with email, name, and role",
         headers: {
@@ -207,7 +207,7 @@ const routes = new Routes({
       }),
     }),
   ],
-  postman: new PostmanForRoutes({ folderName: "User Management" }),
+  postman: new PostmanGroup({ folderName: "User Management" }),
 });
 
 const app = express();

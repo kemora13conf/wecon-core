@@ -2,8 +2,8 @@ import { Handler, RequestHandler } from "express";
 import Route from "../lib/Route";
 import Routes from "../lib/Routes";
 import RoutesParam from "../lib/RoutesParam";
-import PostmanForRoute from "../lib/PostmanForRoute";
-import PostmanForRoutes from "../lib/PostmanForRoutes";
+import PostmanRoute from "../lib/PostmanRoute";
+import PostmanGroup from "../lib/PostmanGroup";
 
 interface RoutesConfig {
   prefix?: string;
@@ -11,7 +11,7 @@ interface RoutesConfig {
   params?: RoutesParam[];
   middlewares?: Handler[];
   mergeParams?: boolean;
-  postman?: PostmanForRoutes;
+  postman?: PostmanGroup;
   module?: string;
 }
 
@@ -24,7 +24,7 @@ interface RouteConfig {
   description?: string;
   rai: RAI;
   roles: string[];
-  postman?: PostmanForRoute;
+  postman?: PostmanRoute;
 }
 
 type RAI = string;
@@ -69,8 +69,7 @@ export type {
   PostmanEvent,
   PostmanEventList,
   PostmanProtocolProfileBehavior,
-  PostmanForRoutesConfig,
+  PostmanGroupConfig,
+  PostmanRouteConfig,
   PostmanCollectionConfig,
 } from "./postman.types";
-
-export type { PostmanForRouteConfig } from "../lib/PostmanForRoute";
