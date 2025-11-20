@@ -12,11 +12,11 @@
  * - Smart defaults for missing configurations
  */
 
-import { writeFileSync } from 'fs';
-import { dirname } from 'path';
-import { mkdirSync } from 'fs';
-import Route from '../lib/Route';
-import Routes from '../lib/Routes';
+import { writeFileSync } from "fs";
+import { dirname } from "path";
+import { mkdirSync } from "fs";
+import Route from "../lib/Route";
+import Routes from "../lib/Routes";
 import {
   PostmanInfo,
   PostmanVariable,
@@ -24,7 +24,11 @@ import {
   PostmanAuth,
   PostmanEventList,
   PostmanProtocolProfileBehavior,
-} from '../types/postman.types';
+} from "../types/postman.types";
+
+// so we can easily change schema version in the future
+const SCHEMA_URL =
+  "https://schema.getpostman.com/json/collection/v2.1.0/collection.json";
 
 /**
  * Configuration for PostmanGenerator
@@ -96,7 +100,12 @@ interface PostmanRequest {
     mode: string;
     raw?: string;
     urlencoded?: Array<{ key: string; value: string; disabled?: boolean }>;
-    formdata?: Array<{ key: string; value: string; type?: string; disabled?: boolean }>;
+    formdata?: Array<{
+      key: string;
+      value: string;
+      type?: string;
+      disabled?: boolean;
+    }>;
     file?: { src: string };
     graphql?: { query: string; variables?: string };
     options?: { raw?: { language?: string } };
@@ -134,7 +143,7 @@ interface PostmanEnvironment {
   values: Array<{
     key: string;
     value: string;
-    type?: 'default' | 'secret';
+    type?: "default" | "secret";
     enabled?: boolean;
     description?: string;
   }>;
@@ -191,11 +200,11 @@ class PostmanGenerator {
   private extractVariables(): void {
     // Add baseUrl as a variable
     if (this.config.baseUrl) {
-      this.collectedVariables.set('baseUrl', {
-        key: 'baseUrl',
+      this.collectedVariables.set("baseUrl", {
+        key: "baseUrl",
         value: this.config.baseUrl,
-        type: 'string',
-        description: 'Base URL for all API requests',
+        type: "string",
+        description: "Base URL for all API requests",
       });
     }
 
@@ -206,16 +215,19 @@ class PostmanGenerator {
   /**
    * Recursively extract variables from Routes instances
    */
-  private extractVariablesFromRoutes(routes: Routes | Route, parentPath: string = ''): void {
+  private extractVariablesFromRoutes(
+    routes: Routes | Route,
+    parentPath: string = ""
+  ): void {
     if (routes instanceof Route) {
       // Extract path parameters (e.g., :userId)
       const pathParams = this.extractPathParams(routes.path);
-      pathParams.forEach(param => this.pathVariables.add(param));
+      pathParams.forEach((param) => this.pathVariables.add(param));
 
       // Extract variables from PostmanForRoute config
       if (routes.postman) {
         if (routes.postman.variable) {
-          routes.postman.variable.forEach(variable => {
+          routes.postman.variable.forEach((variable) => {
             const key = variable.key || variable.id;
             if (key && !this.collectedVariables.has(key)) {
               this.collectedVariables.set(key, variable);
@@ -225,12 +237,12 @@ class PostmanGenerator {
 
         // Extract variables from query params
         if (routes.postman.query) {
-          Object.keys(routes.postman.query).forEach(key => {
+          Object.keys(routes.postman.query).forEach((key) => {
             if (!this.collectedVariables.has(key)) {
               this.collectedVariables.set(key, {
                 key,
                 value: routes.postman!.query![key],
-                type: 'string',
+                type: "string",
               });
             }
           });
@@ -238,14 +250,14 @@ class PostmanGenerator {
 
         // Extract variables from headers (like {{authToken}})
         if (routes.postman.headers) {
-          Object.values(routes.postman.headers).forEach(headerValue => {
+          Object.values(routes.postman.headers).forEach((headerValue) => {
             const variables = this.extractVariablesFromString(headerValue);
-            variables.forEach(varName => {
+            variables.forEach((varName) => {
               if (!this.collectedVariables.has(varName)) {
                 this.collectedVariables.set(varName, {
                   key: varName,
-                  value: '',
-                  type: 'string',
+                  value: "",
+                  type: "string",
                   description: `Extracted from headers`,
                 });
               }
@@ -255,13 +267,15 @@ class PostmanGenerator {
 
         // Extract variables from body
         if (routes.postman.body?.raw) {
-          const variables = this.extractVariablesFromString(routes.postman.body.raw);
-          variables.forEach(varName => {
+          const variables = this.extractVariablesFromString(
+            routes.postman.body.raw
+          );
+          variables.forEach((varName) => {
             if (!this.collectedVariables.has(varName)) {
               this.collectedVariables.set(varName, {
                 key: varName,
-                value: '',
-                type: 'string',
+                value: "",
+                type: "string",
                 description: `Extracted from request body`,
               });
             }
@@ -274,7 +288,7 @@ class PostmanGenerator {
       // Extract variables from PostmanForRoutes config
       if (routes.postman) {
         if (routes.postman.variable) {
-          routes.postman.variable.forEach(variable => {
+          routes.postman.variable.forEach((variable) => {
             const key = variable.key || variable.id;
             if (key && !this.collectedVariables.has(key)) {
               this.collectedVariables.set(key, variable);
@@ -284,7 +298,7 @@ class PostmanGenerator {
       }
 
       // Recursively process child routes
-      routes.routes.forEach(childRoute => {
+      routes.routes.forEach((childRoute) => {
         this.extractVariablesFromRoutes(childRoute, currentPath);
       });
     }
@@ -297,7 +311,7 @@ class PostmanGenerator {
   private extractPathParams(path: string): string[] {
     const matches = path.match(/:([a-zA-Z_][a-zA-Z0-9_]*)/g);
     if (!matches) return [];
-    return matches.map(match => match.slice(1)); // Remove the ':' prefix
+    return matches.map((match) => match.slice(1)); // Remove the ':' prefix
   }
 
   /**
@@ -306,7 +320,7 @@ class PostmanGenerator {
   private extractVariablesFromString(str: string): string[] {
     const matches = str.match(/\{\{([a-zA-Z_][a-zA-Z0-9_]*)\}\}/g);
     if (!matches) return [];
-    return matches.map(match => match.slice(2, -2)); // Remove {{ and }}
+    return matches.map((match) => match.slice(2, -2)); // Remove {{ and }}
   }
 
   /**
@@ -316,9 +330,9 @@ class PostmanGenerator {
     const collection: PostmanCollection = {
       info: {
         name: this.config.name,
-        description: this.config.description || '',
-        version: this.config.version || '1.0.0',
-        schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
+        description: this.config.description || "",
+        version: this.config.version || "1.0.0",
+        schema: SCHEMA_URL,
       },
       item: [],
     };
@@ -338,10 +352,14 @@ class PostmanGenerator {
   /**
    * Convert Routes/Route instances to Postman items/folders
    */
-  private convertRoutesToItems(routes: Routes | Route): (PostmanItem | PostmanItemGroup)[] {
+  private convertRoutesToItems(
+    routes: Routes | Route,
+    parentPrefix: string = ""
+  ): (PostmanItem | PostmanItemGroup)[] {
     const items: (PostmanItem | PostmanItemGroup)[] = [];
 
     if (routes instanceof Route) {
+      routes.path = `${parentPrefix}${routes.path}`;
       // Convert single Route to PostmanItem
       const item = this.convertRouteToItem(routes);
       items.push(item);
@@ -352,7 +370,7 @@ class PostmanGenerator {
       if (shouldBeFolder) {
         // Create a folder (item group)
         const folder: PostmanItemGroup = {
-          name: routes.postman?.folderName || routes.prefix || 'Routes',
+          name: routes.postman?.folderName || routes.prefix || "Routes",
           item: [],
         };
 
@@ -378,20 +396,28 @@ class PostmanGenerator {
 
         // Add protocol profile behavior if provided
         if (routes.postman?.protocolProfileBehavior) {
-          folder.protocolProfileBehavior = routes.postman.protocolProfileBehavior;
+          folder.protocolProfileBehavior =
+            routes.postman.protocolProfileBehavior;
         }
+        console.log(" prefix ===> ", parentPrefix + routes.prefix);
 
         // Convert child routes
-        routes.routes.forEach(childRoute => {
-          const childItems = this.convertRoutesToItems(childRoute);
+        routes.routes.forEach((childRoute) => {
+          const childItems = this.convertRoutesToItems(
+            childRoute,
+            parentPrefix + routes.prefix
+          );
           folder.item.push(...childItems);
         });
 
         items.push(folder);
       } else {
         // No folder, just flatten the children
-        routes.routes.forEach(childRoute => {
-          const childItems = this.convertRoutesToItems(childRoute);
+        routes.routes.forEach((childRoute) => {
+          const childItems = this.convertRoutesToItems(
+            childRoute,
+            parentPrefix + routes.prefix
+          );
           items.push(...childItems);
         });
       }
@@ -404,7 +430,7 @@ class PostmanGenerator {
    * Convert a single Route to a PostmanItem
    */
   private convertRouteToItem(route: Route): PostmanItem {
-    const baseUrl = this.config.baseUrl || '{{baseUrl}}';
+    const baseUrl = this.config.baseUrl || "{{baseUrl}}";
 
     // Use PostmanForRoute's toPostmanItem if configured
     if (route.postman) {
@@ -417,7 +443,10 @@ class PostmanGenerator {
       };
 
       // Normalize description (PostmanDescription can be null, but we want undefined)
-      if (generatedItem.description !== null && generatedItem.description !== undefined) {
+      if (
+        generatedItem.description !== null &&
+        generatedItem.description !== undefined
+      ) {
         item.description = generatedItem.description;
       }
 
@@ -442,8 +471,8 @@ class PostmanGenerator {
         header: [],
         url: {
           raw: `${baseUrl}${postmanPath}`,
-          host: baseUrl.includes('://') ? [baseUrl] : [baseUrl],
-          path: postmanPath.split('/').filter(segment => segment !== ''),
+          host: baseUrl.includes("://") ? [baseUrl] : [baseUrl],
+          path: postmanPath.split("/").filter((segment) => segment !== ""),
         },
       },
     };
@@ -461,7 +490,7 @@ class PostmanGenerator {
    * Example: /users/:userId -> /users/{{userId}}
    */
   private convertPathToPostman(path: string): string {
-    return path.replace(/:([a-zA-Z_][a-zA-Z0-9_]*)/g, '{{$1}}');
+    return path.replace(/:([a-zA-Z_][a-zA-Z0-9_]*)/g, "{{$1}}");
   }
 
   /**
@@ -471,31 +500,32 @@ class PostmanGenerator {
     const environment: PostmanEnvironment = {
       name: `${this.config.name} - Environment`,
       values: [],
-      _postman_variable_scope: 'environment',
+      _postman_variable_scope: "environment",
       _postman_exported_at: new Date().toISOString(),
-      _postman_exported_using: 'Wecon PostmanGenerator',
+      _postman_exported_using: "Wecon PostmanGenerator",
     };
 
     // Add collected variables
-    this.collectedVariables.forEach(variable => {
+    this.collectedVariables.forEach((variable) => {
       environment.values.push({
-        key: variable.key || variable.id || '',
-        value: String(variable.value || ''),
-        type: 'default',
+        key: variable.key || variable.id || "",
+        value: String(variable.value || ""),
+        type: "default",
         enabled: !variable.disabled,
-        description: typeof variable.description === 'string'
-          ? variable.description
-          : variable.description?.content,
+        description:
+          typeof variable.description === "string"
+            ? variable.description
+            : variable.description?.content,
       });
     });
 
     // Add path variables (from :param) with empty values
-    this.pathVariables.forEach(paramName => {
+    this.pathVariables.forEach((paramName) => {
       if (!this.collectedVariables.has(paramName)) {
         environment.values.push({
           key: paramName,
-          value: '',
-          type: 'default',
+          value: "",
+          type: "default",
           enabled: true,
           description: `Path parameter extracted from route`,
         });
@@ -515,7 +545,7 @@ class PostmanGenerator {
       mkdirSync(dir, { recursive: true });
 
       // Write file
-      writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf-8');
+      writeFileSync(filePath, JSON.stringify(data, null, 2), "utf-8");
       console.log(`✓ Generated Postman file: ${filePath}`);
     } catch (error) {
       console.error(`✗ Failed to write Postman file: ${filePath}`, error);

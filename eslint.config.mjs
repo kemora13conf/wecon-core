@@ -3,6 +3,7 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 import css from "@eslint/css";
 import { defineConfig } from "eslint/config";
+// import security from "eslint-plugin-security";
 
 export default defineConfig([
   {
@@ -15,6 +16,7 @@ export default defineConfig([
     languageOptions: { globals: globals.browser },
   },
   tseslint.configs.recommended,
+  // security.configs.recommended,
   {
     files: ["**/*.css"],
     plugins: { css },
@@ -28,6 +30,6 @@ export default defineConfig([
     },
   },
   {
-    ignores: ["dist/**/*"]
-  }
+    ignores: ["dist/**/*"],
+  },
 ]);

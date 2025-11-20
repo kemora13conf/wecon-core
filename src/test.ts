@@ -61,7 +61,7 @@ const routes = new Routes({
       ],
     }),
     new Routes({
-      // prefix: "/profile",
+      prefix: "/profile",
       params: [
         new RoutesParam("userId", (req, res, next, value) => {
           console.log("Profile ID param value:", value);
@@ -96,6 +96,33 @@ const routes = new Routes({
           ],
         }),
       ],
+      postman: new PostmanForRoutes({
+        folderName: "Profile",
+        auth: {
+          type: "bearer",
+          bearer: [
+            {
+              key: "token", // Note: should be lowercase "token"
+              value: "{{your_token_value_here}}",
+              type: "string",
+            },
+          ],
+        },
+        description: "some random description",
+        event: [
+          {
+            id: "sfsdfdsf",
+            listen: "prerequest",
+            script: {
+              type: "text/javascript",
+              exec: [
+                "// Pre-request script for Profile routes",
+                "console.log('Preparing to call Profile route');",
+              ],
+            },
+          },
+        ],
+      }),
     }),
 
     new Route({
