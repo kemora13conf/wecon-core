@@ -49,7 +49,10 @@
     "prepublishOnly": "yarn run build",
     "lint": "eslint . --ext .ts,.js",
     "lint:fix": "eslint . --ext .ts,.js --fix",
-    "publish:npm": "yarn run build && npm publish --access public"
+    "publish:npm": "yarn run build && npm publish --access public",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "devDependencies": {
     "@eslint/css": "^0.7.0",
@@ -71,7 +74,9 @@
     "ts-jest": "^29.4.5",
     "tsx": "^4.20.6",
     "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0"
+    "typescript-eslint": "^8.31.0",
+    "vitepress": "^1.6.4",
+    "vue": "^3.5.24"
   },
   "dependencies": {
     "@swc/helpers": "^0.5.17",
