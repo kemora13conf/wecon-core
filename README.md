@@ -11,6 +11,7 @@ A comprehensive TypeScript framework for building Express.js APIs with built-in 
 - **Smart Routing**: High-performance route matching with static/dynamic segment prioritization.
 - **Hierarchical Organization**: Logically group your routes with shared prefixes and middleware.
 - **Automatic Postman Documentation**: Generate production-ready Postman collections and environments with variable extraction.
+- **OpenAPI Support**: Generate OpenAPI 3.0 specifications (Swagger) for your API.
 - **Developer Experience**: Helpful error messages with stack traces pointing exactly to your configuration issues.
 - **TypeScript Support**: Fully typed API for better developer experience.
 
@@ -23,6 +24,7 @@ A comprehensive TypeScript framework for building Express.js APIs with built-in 
   - [Routes](#routes)
   - [Route](#route)
   - [Postman Integration](#postman-integration)
+  - [OpenAPI Integration](#openapi-integration)
 - [API Reference](#api-reference)
 - [Examples](#examples)
 - [License](#license)
@@ -75,6 +77,12 @@ const wecon = new Wecon()
       collection: "./postman_collection.json",
       environment: "./postman_environment.json"
     }
+    }
+  })
+  .openapi({
+    title: "My API",
+    version: "1.0.0",
+    output: "./openapi.json"
   })
   .build();
 
@@ -159,6 +167,34 @@ Wecon treats documentation as a first-class citizen. It generates:
 
 Use `PostmanGroup` for folders and `PostmanRoute` for requests to customize the output (auth, scripts, variables, etc.).
 
+### OpenAPI Integration
+
+Wecon can generate an OpenAPI 3.0.0 specification file (Swagger).
+
+```typescript
+wecon.openapi({
+  title: "My API",
+  version: "1.0.0",
+  output: "./openapi.json",
+  servers: [{ url: "http://localhost:3000" }]
+});
+```
+
+You can customize OpenAPI metadata at the route and group level:
+
+```typescript
+new Route({
+  // ...
+  openapi: {
+    summary: "Get User",
+    tags: ["Users"],
+    responses: {
+      "200": { description: "User found" }
+    }
+  }
+})
+```
+
 ## API Reference
 
 ### Wecon Class
@@ -169,6 +205,7 @@ Use `PostmanGroup` for folders and `PostmanRoute` for requests to customize the 
 | `.roles(roles: string[])` | Define all available roles in the system. |
 | `.guestRole(role: string)` | Set the default role for unauthenticated users (default: 'guest'). |
 | `.postman(config)` | Configure Postman generation settings. |
+| `.openapi(config)` | Configure OpenAPI generation settings. |
 | `.dev(config)` | Configure development options (debug mode, helpful errors). |
 | `.build()` | Compile routes and prepare the middleware. Must be called before use. |
 | `.handler()` | Returns the Express middleware function. |
@@ -182,6 +219,7 @@ Use `PostmanGroup` for folders and `PostmanRoute` for requests to customize the 
 | `middlewares` | `Handler[]` | Express middleware shared by all children. |
 | `params` | `RoutesParam[]` | Route parameter handlers (e.g., for :id). |
 | `postman` | `PostmanGroup` | Postman folder configuration. |
+| `openapi` | `OpenApiGroupConfig` | OpenAPI group configuration (tags, etc.). |
 
 ### Route Config
 
@@ -193,6 +231,7 @@ Use `PostmanGroup` for folders and `PostmanRoute` for requests to customize the 
 | `roles` | `string[]` | Roles allowed to access this route. |
 | `middlewares` | `Handler[]` | Express handlers for this route. |
 | `postman` | `PostmanRoute` | Postman request configuration. |
+| `openapi` | `OpenApiRouteConfig` | OpenAPI operation configuration. |
 
 ## Examples
 

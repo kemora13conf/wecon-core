@@ -4,6 +4,7 @@ import Routes from "../lib/Routes";
 import RoutesParam from "../lib/RoutesParam";
 import PostmanRoute from "../lib/PostmanRoute";
 import PostmanGroup from "../lib/PostmanGroup";
+import { OpenApiRouteConfig, OpenApiGroupConfig } from "./openapi.types";
 
 interface RoutesConfig {
   prefix?: string;
@@ -12,6 +13,7 @@ interface RoutesConfig {
   middlewares?: Handler[];
   mergeParams?: boolean;
   postman?: PostmanGroup;
+  openapi?: OpenApiGroupConfig;
   module?: string;
 }
 
@@ -25,6 +27,7 @@ interface RouteConfig {
   rai: RAI;
   roles: string[];
   postman?: PostmanRoute;
+  openapi?: OpenApiRouteConfig;
 }
 
 type RAI = string;
@@ -73,3 +76,5 @@ export type {
   PostmanRouteConfig,
   PostmanCollectionConfig,
 } from "./postman.types";
+
+export * from "./openapi.types";

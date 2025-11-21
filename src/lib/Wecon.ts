@@ -46,6 +46,8 @@ import Route from "./Route";
 import errors from "../errors";
 import RaiMatcher from "../utils/RaiMatcher";
 import PostmanGenerator from "../generators/PostmanGenerator";
+import OpenApiGenerator from "../generators/OpenApiGenerator";
+import { WeconOpenApiConfig } from "../types/openapi.types";
 
 /**
  * Postman configuration interface
@@ -90,6 +92,7 @@ class Wecon {
   private _roles: string[] = [];
   private _guestRole: string = "guest";
   private _postman?: WeconPostmanConfig;
+  private _openapi?: WeconOpenApiConfig;
   private _onRoutesPrepared?: (routes: Route[]) => void | Promise<void>;
   private _dev?: WeconDevConfig;
 
@@ -102,7 +105,6 @@ class Wecon {
   // Internal state after build
   private _built: boolean = false;
   private _raisMap?: Map<RAI, Route>;
-  private _routerMap?: Map<RAI, Router>;
   private _middleware?: RequestHandler;
 
   constructor() {
@@ -167,6 +169,19 @@ class Wecon {
       throw new Error("Cannot modify Wecon after build() has been called");
     }
     this._postman = config;
+    return this;
+  }
+
+  /**
+   * Configure OpenAPI specification generation
+   * @param config - OpenAPI configuration object
+   * @returns this for method chaining
+   */
+  public openapi(config: WeconOpenApiConfig): this {
+    if (this._built) {
+      throw new Error("Cannot modify Wecon after build() has been called");
+    }
+    this._openapi = config;
     return this;
   }
 
@@ -301,6 +316,13 @@ class Wecon {
     if (this._postman?.autoGenerate) {
       this.generatePostman().catch((err) => {
         console.error("Error generating Postman collection:", err);
+      });
+    }
+
+    // 7. Generate OpenAPI spec if configured
+    if (this._openapi) {
+      this.generateOpenApi().catch((err) => {
+        console.error("Error generating OpenAPI spec:", err);
       });
     }
 
@@ -494,6 +516,41 @@ class Wecon {
       }
     } catch (error) {
       console.error("Failed to generate Postman collection:", error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate OpenAPI specification
+   * @returns Promise that resolves when generation is complete
+   */
+  public async generateOpenApi(): Promise<void> {
+    if (!this._openapi) {
+      throw new Error(
+        "OpenAPI configuration not provided. Call openapi() before generateOpenApi()"
+      );
+    }
+
+    if (!this._built) {
+      throw new Error(
+        "Cannot generate OpenAPI spec before build() is called"
+      );
+    }
+
+    if (!this._routes) {
+      throw new Error(
+        "Routes not configured. Cannot generate OpenAPI spec."
+      );
+    }
+
+    try {
+      await OpenApiGenerator.generateFromWecon(this._openapi, this._routes);
+
+      if (this._dev?.logRoutes) {
+        console.log(`✓ Generated OpenAPI spec: ${this._openapi.title}`);
+      }
+    } catch (error) {
+      console.error("Failed to generate OpenAPI spec:", error);
       throw error;
     }
   }

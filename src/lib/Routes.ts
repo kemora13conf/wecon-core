@@ -1,7 +1,7 @@
 
 import { Handler } from "express";
 import Route from "./Route";
-import { ErrorTraceType, PossibleErrosType, RoutesConfig } from "../types";
+import { ErrorTraceType, PossibleErrosType, RoutesConfig, OpenApiGroupConfig } from "../types";
 import RoutesParam from "./RoutesParam";
 import BaseClass from "./BaseClass";
 import errors from "../errors";
@@ -14,6 +14,7 @@ class Routes extends BaseClass {
   middlewares?: Handler[];
   mergeParams?: boolean = false;
   postman?: PostmanGroup;
+  openapi?: OpenApiGroupConfig;
 
   constructor(r: RoutesConfig) {
     super(); // Call the BaseClass constructor
@@ -25,6 +26,7 @@ class Routes extends BaseClass {
     this.postman = r.postman
       ? r.postman
       : new PostmanGroup({ folderName: "" });
+    this.openapi = r.openapi;
     this.mergeParams = r.mergeParams ? r.mergeParams : false;
 
     try {

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Handler, RequestHandler } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { RouteConfig, ErrorTraceType, PossibleErrosType, RAI } from "../types";
+import { RouteConfig, ErrorTraceType, PossibleErrosType, RAI, OpenApiRouteConfig } from "../types";
 import BaseClass from "./BaseClass";
 import errors from "../errors";
 import PostmanRoute from "./PostmanRoute";
@@ -18,6 +18,7 @@ class Route extends BaseClass {
   rai: RAI;
   roles: string[];
   postman?: PostmanRoute;
+  openapi?: OpenApiRouteConfig;
   public debugInfo: ErrorTraceType;
 
   constructor(r: RouteConfig) {
@@ -31,7 +32,9 @@ class Route extends BaseClass {
     this.description = r.description ? r.description : "";
     this.rai = r.rai;
     this.roles = r.roles;
+    this.roles = r.roles;
     this.postman = r.postman;
+    this.openapi = r.openapi;
     this.debugInfo = this.getCallerInfo();
 
     try {
