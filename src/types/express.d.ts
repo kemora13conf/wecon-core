@@ -1,4 +1,5 @@
 import { RAI } from ".";
+import Route from "../lib/Route";
 
 declare global {
   namespace Express {
@@ -10,6 +11,7 @@ declare global {
     interface Request {
       rai?: RAI;
       rais?: RAI[];
+      route?: Route;
       user?: {
         roles: string[];
       };

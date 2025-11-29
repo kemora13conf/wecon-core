@@ -15,6 +15,7 @@ class Routes extends BaseClass {
   mergeParams?: boolean = false;
   postman?: PostmanGroup;
   openapi?: OpenApiGroupConfig;
+  meta?: Record<string, unknown>;
 
   constructor(r: RoutesConfig) {
     super(); // Call the BaseClass constructor
@@ -28,6 +29,7 @@ class Routes extends BaseClass {
       : new PostmanGroup({ folderName: "" });
     this.openapi = r.openapi;
     this.mergeParams = r.mergeParams ? r.mergeParams : false;
+    this.meta = r.meta;
 
     try {
       this.validateRoutes();

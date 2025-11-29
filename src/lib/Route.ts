@@ -19,6 +19,7 @@ class Route extends BaseClass {
   roles: string[];
   postman?: PostmanRoute;
   openapi?: OpenApiRouteConfig;
+  meta?: Record<string, unknown>;
   public debugInfo: ErrorTraceType;
 
   constructor(r: RouteConfig) {
@@ -35,6 +36,7 @@ class Route extends BaseClass {
     this.roles = r.roles;
     this.postman = r.postman;
     this.openapi = r.openapi;
+    this.meta = r.meta;
     this.debugInfo = this.getCallerInfo();
 
     try {

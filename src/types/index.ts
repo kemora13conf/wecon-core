@@ -15,6 +15,7 @@ interface RoutesConfig {
   postman?: PostmanGroup;
   openapi?: OpenApiGroupConfig;
   module?: string;
+  meta?: Record<string, unknown>;
 }
 
 interface RouteConfig {
@@ -28,6 +29,7 @@ interface RouteConfig {
   roles: string[];
   postman?: PostmanRoute;
   openapi?: OpenApiRouteConfig;
+  meta?: Record<string, unknown>;
 }
 
 type RAI = string;

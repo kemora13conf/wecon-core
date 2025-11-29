@@ -399,6 +399,11 @@ class Wecon {
 
         // 1.2 Check 403 (Authorization)
         const route = this._raisMap!.get(reqRai)!;
+
+        // Attach RAI and Route to the request object for downstream access
+        req.rai = reqRai;
+        req.route = route;
+
         const user = req.user; // Ensure you have types for this
         const user_roles: string[] = user?.roles || [this._guestRole];
 
