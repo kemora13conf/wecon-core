@@ -25,6 +25,7 @@ export type { PostmanRouteConfig, PostmanGroupConfig };
 // Error exports
 import ConfigError from "./errors/ConfigError";
 import RequestError from "./errors/RequestError";
+import ErrorCatcher from "./lib/ErrorCatcher";
 
 // Export everything
 export {
@@ -45,6 +46,7 @@ export {
   // Errors
   ConfigError,
   RequestError,
+  ErrorCatcher,
 };
 
 // Default export
