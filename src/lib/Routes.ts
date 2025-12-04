@@ -36,7 +36,7 @@ class Routes extends ErrorCatcher {
     try {
       this.validateRoutes();
     } catch (err) {
-      const errInfo = this.getCallerInfo();
+      const errInfo = Routes.getCallerInfo();
       this.handleConfigError(err as Error, errInfo);
     }
   }
@@ -130,7 +130,7 @@ class Routes extends ErrorCatcher {
       details: "An unexpected error occurred",
       fix: "Please check your Routes configuration",
     };
-    super.logError(errorConfig, errInfo);
+    ErrorCatcher.logError(errorConfig, errInfo);
   }
 
   public groupRoutesByRai(): Map<
@@ -169,7 +169,7 @@ class Routes extends ErrorCatcher {
             fix: "Ensure each route has a unique rai:\n    rai: 'users:create' // Different from existing RAIs",
           };
           // Use the debug info captured at instantiation time to point to the user's code
-          current.logError(errorConfig, current.debugInfo);
+          ErrorCatcher.logError(errorConfig, current.debugInfo);
         }
 
         // Create the flattened route object

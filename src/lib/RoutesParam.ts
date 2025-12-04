@@ -35,7 +35,7 @@ class RoutesParam extends ErrorCatcher {
     try {
       this.validateParam();
     } catch (err) {
-      const errInfo = this.getCallerInfo();
+      const errInfo = ErrorCatcher.getCallerInfo();
       this.handleConfigError(err as Error, errInfo);
     }
   }
@@ -161,7 +161,7 @@ class RoutesParam extends ErrorCatcher {
       fix: "Please check your RoutesParam configuration",
     };
 
-    super.logError(errorConfig, errInfo);
+    ErrorCatcher.logError(errorConfig, errInfo);
   }
   validateValue(value: string): boolean {
     if (!this.validate) {

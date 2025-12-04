@@ -43,7 +43,7 @@ class Route extends ErrorCatcher {
     this.postman = r.postman;
     this.openapi = r.openapi;
     this.meta = r.meta;
-    this.debugInfo = this.getCallerInfo();
+    this.debugInfo = Route.getCallerInfo();
 
     try {
       this.validateRoute();
@@ -155,7 +155,7 @@ class Route extends ErrorCatcher {
       fix: "Please check your Route configuration",
     };
 
-    super.logError(errorConfig, errInfo);
+    ErrorCatcher.logError(errorConfig, errInfo);
   }
 
   /**
