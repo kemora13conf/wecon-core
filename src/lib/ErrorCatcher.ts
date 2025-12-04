@@ -25,7 +25,7 @@ export abstract class ErrorCatcher {
    * @returns {number} returns.column - The column number of instantiation
    * @returns {string | null} returns.function - The function name where instantiation occurred, or null if unknown
    */
-  protected static getCallerInfo(): ErrorTraceType {
+  static getCallerInfo(): ErrorTraceType {
     const err = new Error();
     const stack = err.stack || "";
 
