@@ -7,46 +7,55 @@ Comprehensive test suite for the @wecon/core package, ensuring quality and relia
 This test suite covers the following units:
 
 ### ✅ Error Classes (`tests/errors/`)
+
 - **ConfigError** - Configuration error handling with metadata
 - **RequestError** - Request error handling for runtime issues
 
 ### ✅ Library Classes (`tests/lib/`)
+
 - **PostmanForRoute** - Postman request-level configuration
 - **PostmanForRoutes** - Postman folder/collection configuration
 - **RoutesParam** - Route parameter validation and middleware
 
 ### ✅ Utilities (`tests/utils/`)
+
 - **RaiMatcher** - Route matching with caching and performance optimization
 
 ### 🚧 Pending (To be added)
+
 - **Route** - Individual route endpoint testing
 - **Routes** - Route group and hierarchy testing
 - **Wecon** - Main framework class testing
-- **BaseClass** - Base class utilities testing
+- **ErrorCatcher** - Base class utilities testing
 
 ## 🚀 Running Tests
 
 ### Run All Tests
+
 ```bash
 yarn test
 ```
 
 ### Run Tests in Watch Mode
+
 ```bash
 yarn test:watch
 ```
 
 ### Run Tests with Coverage
+
 ```bash
 yarn test:coverage
 ```
 
 ### Run Tests with Verbose Output
+
 ```bash
 yarn test:verbose
 ```
 
 ### Run Development Test File
+
 ```bash
 yarn test:dev
 ```
@@ -69,6 +78,7 @@ tests/
 ## 🧪 Test Categories
 
 ### Unit Tests
+
 Each class is tested in isolation with comprehensive coverage:
 
 1. **Constructor Tests** - Verify proper initialization
@@ -81,6 +91,7 @@ Each class is tested in isolation with comprehensive coverage:
 ### Test Patterns
 
 #### ConfigError & RequestError
+
 - Instance creation and type checking
 - Message and metadata handling
 - Stack trace capture
@@ -89,6 +100,7 @@ Each class is tested in isolation with comprehensive coverage:
 - Edge cases (empty strings, special characters, long messages)
 
 #### PostmanForRoute & PostmanForRoutes
+
 - Basic property initialization
 - Postman schema v2.1.0 compliance
 - Authentication configurations (Bearer, API Key, Basic, OAuth2)
@@ -98,6 +110,7 @@ Each class is tested in isolation with comprehensive coverage:
 - Complex configurations with all properties
 
 #### RoutesParam
+
 - Path and middleware initialization
 - UUID generation and uniqueness
 - Pattern validation (RegEx)
@@ -107,6 +120,7 @@ Each class is tested in isolation with comprehensive coverage:
 - Edge cases (empty strings, unicode, long values)
 
 #### RaiMatcher
+
 - Exact route matching
 - Dynamic route matching (parameters)
 - HTTP method differentiation
@@ -126,6 +140,7 @@ Each class is tested in isolation with comprehensive coverage:
 ## 🔧 Configuration
 
 ### Jest Configuration (`jest.config.js`)
+
 - **Preset**: ts-jest with ESM support
 - **Environment**: Node.js
 - **Test Match**: `**/*.test.ts` and `**/*.spec.ts`
@@ -133,6 +148,7 @@ Each class is tested in isolation with comprehensive coverage:
 - **Timeout**: 10 seconds per test
 
 ### ESM Support
+
 Tests use ESM modules with the `--experimental-vm-modules` flag for Node.js compatibility.
 
 ## ✍️ Writing New Tests
@@ -140,19 +156,19 @@ Tests use ESM modules with the `--experimental-vm-modules` flag for Node.js comp
 ### Template for New Test File
 
 ```typescript
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
-import YourClass from '../../src/lib/YourClass.js';
+import { describe, it, expect, beforeEach, afterEach } from "@jest/globals";
+import YourClass from "../../src/lib/YourClass.js";
 
-describe('YourClass', () => {
-  describe('Constructor', () => {
-    it('should create an instance', () => {
+describe("YourClass", () => {
+  describe("Constructor", () => {
+    it("should create an instance", () => {
       const instance = new YourClass(config);
       expect(instance).toBeInstanceOf(YourClass);
     });
   });
 
-  describe('Method Name', () => {
-    it('should do something specific', () => {
+  describe("Method Name", () => {
+    it("should do something specific", () => {
       // Arrange
       const instance = new YourClass(config);
 
@@ -164,8 +180,8 @@ describe('YourClass', () => {
     });
   });
 
-  describe('Edge Cases', () => {
-    it('should handle edge case', () => {
+  describe("Edge Cases", () => {
+    it("should handle edge case", () => {
       // Test edge case
     });
   });
@@ -185,16 +201,19 @@ describe('YourClass', () => {
 ## 🐛 Debugging Tests
 
 ### Run Specific Test File
+
 ```bash
 yarn test tests/errors/ConfigError.test.ts
 ```
 
 ### Run Specific Test Suite
+
 ```bash
 yarn test -t "ConfigError"
 ```
 
 ### Run with Node Inspector
+
 ```bash
 node --inspect-brk --experimental-vm-modules node_modules/jest/bin/jest.js
 ```
@@ -202,11 +221,13 @@ node --inspect-brk --experimental-vm-modules node_modules/jest/bin/jest.js
 ## 📝 Coverage Reports
 
 Coverage reports are generated in the `coverage/` directory:
+
 - **HTML Report**: `coverage/lcov-report/index.html`
 - **LCOV Report**: `coverage/lcov.info`
 - **Text Summary**: Console output
 
 ### View Coverage
+
 ```bash
 yarn test:coverage
 open coverage/lcov-report/index.html  # macOS
@@ -216,12 +237,15 @@ xdg-open coverage/lcov-report/index.html  # Linux
 ## 🔍 CI/CD Integration
 
 ### Pre-publish Tests
+
 Tests automatically run before publishing:
+
 ```bash
 yarn prepublishOnly  # Runs build, which should include tests
 ```
 
 ### Recommended CI Workflow
+
 ```yaml
 - name: Run Tests
   run: yarn test

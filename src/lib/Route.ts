@@ -1,13 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Handler, RequestHandler } from "express";
 import { v4 as uuidv4 } from "uuid";
-import { RouteConfig, ErrorTraceType, PossibleErrosType, RAI, OpenApiRouteConfig } from "../types";
-import BaseClass from "./BaseClass";
+import {
+  RouteConfig,
+  ErrorTraceType,
+  PossibleErrosType,
+  RAI,
+  OpenApiRouteConfig,
+} from "../types";
+import ErrorCatcher from "./ErrorCatcher";
 import errors from "../errors";
 import PostmanRoute from "./PostmanRoute";
 import RoutesParam from "./RoutesParam";
 
-class Route extends BaseClass {
+class Route extends ErrorCatcher {
   id: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   path: string;
@@ -23,7 +29,7 @@ class Route extends BaseClass {
   public debugInfo: ErrorTraceType;
 
   constructor(r: RouteConfig) {
-    super(); // Call the BaseClass constructor
+    super(); // Call the ErrorCatcher constructor
 
     this.id = uuidv4();
     this.method = r.method;
@@ -48,22 +54,22 @@ class Route extends BaseClass {
 
   private validateRoute(): void {
     /**
-      * 1. Validate the method property
-      */
+     * 1. Validate the method property
+     */
     if (!this.method) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_METHOD");
     }
 
     /**
-      * 2. Validate the path property
-      */
+     * 2. Validate the path property
+     */
     if (!this.path) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_PATH");
     }
 
     /**
-      * 3. Validate the rai property
-      */
+     * 3. Validate the rai property
+     */
     if (!this.rai) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_RAI");
     }
@@ -72,8 +78,8 @@ class Route extends BaseClass {
     }
 
     /**
-      * 4. Validate the roles property
-      */
+     * 4. Validate the roles property
+     */
     if (!this.roles) {
       throw new errors.ConfigError("ROUTE_CONFIG:MISSING_ROLES");
     }

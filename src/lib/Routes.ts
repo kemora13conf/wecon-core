@@ -1,13 +1,17 @@
-
 import { Handler } from "express";
 import Route from "./Route";
-import { ErrorTraceType, PossibleErrosType, RoutesConfig, OpenApiGroupConfig } from "../types";
+import {
+  ErrorTraceType,
+  PossibleErrosType,
+  RoutesConfig,
+  OpenApiGroupConfig,
+} from "../types";
 import RoutesParam from "./RoutesParam";
-import BaseClass from "./BaseClass";
+import ErrorCatcher from "./ErrorCatcher";
 import errors from "../errors";
 import PostmanGroup from "./PostmanGroup";
 
-class Routes extends BaseClass {
+class Routes extends ErrorCatcher {
   prefix: string;
   routes: Array<Route | Routes>;
   params?: RoutesParam[];
@@ -18,15 +22,13 @@ class Routes extends BaseClass {
   meta?: Record<string, unknown>;
 
   constructor(r: RoutesConfig) {
-    super(); // Call the BaseClass constructor
+    super(); // Call the ErrorCatcher constructor
 
     this.prefix = r.prefix ? r.prefix : "";
     this.routes = r.routes;
     this.params = r.params ? r.params : [];
     this.middlewares = r.middlewares ? r.middlewares : [];
-    this.postman = r.postman
-      ? r.postman
-      : new PostmanGroup({ folderName: "" });
+    this.postman = r.postman ? r.postman : new PostmanGroup({ folderName: "" });
     this.openapi = r.openapi;
     this.mergeParams = r.mergeParams ? r.mergeParams : false;
     this.meta = r.meta;

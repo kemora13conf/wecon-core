@@ -1,10 +1,10 @@
 import { RequestParamHandler } from "express";
 import { v4 as uuidv4 } from "uuid";
-import BaseClass from "./BaseClass";
+import ErrorCatcher from "./ErrorCatcher";
 import { ErrorTraceType, PossibleErrosType } from "../types";
 import errors from "../errors";
 
-class RoutesParam extends BaseClass {
+class RoutesParam extends ErrorCatcher {
   readonly uuidv4: string;
   public path: string;
   public middleware: RequestParamHandler;
@@ -25,7 +25,7 @@ class RoutesParam extends BaseClass {
       validatorFn?: (value: string) => boolean;
     }
   ) {
-    super(); // Call the BaseClass constructor
+    super(); // Call the ErrorCatcher constructor
 
     this.uuidv4 = uuidv4();
     this.path = path;

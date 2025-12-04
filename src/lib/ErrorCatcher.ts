@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { ErrorInfoType, ErrorTraceType } from "./../types";
+import { ErrorInfoType, ErrorTraceType } from "../types";
 
 /**
  * Abstract base class that provides common functionality for error tracking and debugging.
@@ -8,9 +8,9 @@ import { ErrorInfoType, ErrorTraceType } from "./../types";
  * which is useful for debugging and error reporting in derived classes.
  *
  * @abstract
- * @class BaseClass
+ * @class ErrorCatcher
  */
-export abstract class BaseClass {
+export abstract class ErrorCatcher {
   /**
    * Retrieves information about the caller that instantiated the current class.
    *
@@ -25,7 +25,7 @@ export abstract class BaseClass {
    * @returns {number} returns.column - The column number of instantiation
    * @returns {string | null} returns.function - The function name where instantiation occurred, or null if unknown
    */
-  protected getCallerInfo(): ErrorTraceType {
+  protected static getCallerInfo(): ErrorTraceType {
     const err = new Error();
     const stack = err.stack || "";
 
@@ -66,7 +66,7 @@ export abstract class BaseClass {
     };
   }
 
-  logError(error: ErrorInfoType, tracedSatckInfo: ErrorTraceType): void {
+  static logError(error: ErrorInfoType, tracedSatckInfo: ErrorTraceType): void {
     console.error(
       chalk.red.bold(
         "\n╔══════════════════════════════════════════════════════════╗"
@@ -98,4 +98,4 @@ export abstract class BaseClass {
   }
 }
 
-export default BaseClass;
+export default ErrorCatcher;
