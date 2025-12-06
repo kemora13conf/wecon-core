@@ -10,6 +10,7 @@ declare global {
     // Extend the Request interface
     interface Request {
       rai?: RAI;
+      route_instance?: Route;
       rais?: RAI[];
       route?: Route;
       user?: {

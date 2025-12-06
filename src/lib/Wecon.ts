@@ -402,7 +402,7 @@ class Wecon {
 
         // Attach RAI and Route to the request object for downstream access
         req.rai = reqRai;
-        req.route = route;
+        req.route_instance = route;
 
         const user = req.user; // Ensure you have types for this
         const user_roles: string[] = user?.roles || [this._guestRole];
