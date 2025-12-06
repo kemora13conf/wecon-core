@@ -5,7 +5,6 @@ interface WeconRequest {
   rai?: RAI;
   route_instance?: Route;
   rais?: RAI[];
-  route?: Route;
   user?: {
     roles: string[];
   };
