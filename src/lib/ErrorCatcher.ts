@@ -68,17 +68,9 @@ export abstract class ErrorCatcher {
 
   static logError(error: ErrorInfoType, tracedSatckInfo: ErrorTraceType): void {
     console.error(
-      chalk.red.bold(
-        "\n╔══════════════════════════════════════════════════════════╗"
-      ),
-      chalk.red.bold("\n║") +
-        chalk.white.bold(
-          "  Route Configuration Error                            "
-        ) +
-        chalk.red.bold("   ║"),
-      chalk.red.bold(
-        "\n╚══════════════════════════════════════════════════════════╝\n"
-      )
+      chalk.red.bold("\n-=>") +
+        chalk.white.bold(" Whoops! We catched an error for you.") +
+        chalk.red.bold(" <=-\n")
     );
 
     console.error(chalk.red.bold("✖ Error:"), chalk.white(error.title));
