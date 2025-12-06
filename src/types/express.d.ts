@@ -1,23 +1,23 @@
 import { RAI } from ".";
 import Route from "../lib/Route";
 
+interface WeconRequest {
+  rai?: RAI;
+  route_instance?: Route;
+  rais?: RAI[];
+  route?: Route;
+  user?: {
+    roles: string[];
+  };
+}
+
 declare global {
   namespace Express {
-    interface Locals {
-    }
-
+    interface Locals {}
 
     // Extend the Request interface
-    interface Request {
-      rai?: RAI;
-      route_instance?: Route;
-      rais?: RAI[];
-      route?: Route;
-      user?: {
-        roles: string[];
-      };
-    }
+    interface Request extends WeconRequest {}
 
-    interface Response { }
+    interface Response {}
   }
 }
