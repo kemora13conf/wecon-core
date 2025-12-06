@@ -1,3 +1,5 @@
 {
-    "eslint.enable": true
+    "eslint.enable": true,
+    "terminal.integrated.suggest.enabled": true,
+    "terminal.integrated.shellIntegration.environmentReporting": true
 }
